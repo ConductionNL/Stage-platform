@@ -1,0 +1,76 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <section class="section-header bg-primary pb-7 pb-lg-10 text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 text-center">
+                    <h1 class="mb-3">{{ 'challanges'|trans|capitalize }}</h1>
+                    <p class="lead px-lg-5 mb-5">{{ 'find the perfect challange for you or your team'|trans|capitalize }}.</p>
+                    <form action="#">
+                        <div class="form-group bg-white shadow-soft rounded-pill mb-4 px-3 py-2">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="input-group input-group-merge shadow-none">
+                                        <div class="input-group-prepend"><span class="input-group-text bg-transparent border-0"><i class="fas fa-search"></i></span></div>
+                                        <input type="text" class="form-control border-0 form-control-flush shadow-none pb-2" placeholder="{{ 'search for challanges'|trans|capitalize }}..." required="">
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-block btn-primary rounded-pill">{{ 'search'|trans|capitalize }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="pattern bottom"></div>
+    </section>
+
+
+    <section class="section section-md pb-0">
+        <div class="container z-2 mt-n9 mt-lg-n11">
+            <div class="row">
+                {% for i in 1..10 %}
+                    <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-5">
+                        <div class="card bg-white border-light shadow-soft p-4 rounded">
+                            <a href="{{ path('app_challange_challange', {id: 'test'}) }}"><img src="/bundles/rocket/assets/img/blog/image-2.jpg" class="card-img-top fmxh-300" alt=""></a>
+                            <div class="card-body p-0 pt-4"><a href="{{ path('app_challange_challange', {id: 'test'}) }}" class="h3">Google launches Cloud AI Platform Pipelines</a>
+                                <div class="d-flex align-items-center my-4"><img class="avatar avatar-sm rounded-circle" src="/bundles/rocket/assets/img/team/profile-picture-2.jpg" alt="">
+                                    <h6 class="text-muted small ml-2 mb-0">James Curran</h6></div>
+                                <p class="mb-0">Richard Thomas was born in 1990, and at only 29 years old, his trajectory is good. When he is asked how he describes himself, he responds, "designer but in a broad sense". His projects?</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-center w-100">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">4</a></li>
+                            <li class="page-item"><a class="page-link" href="#">5</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section section-lg pb-5 bg-soft">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="mb-4">Faster growth starts with Rocket</h2>
+                    <p class="lead mb-5">Join over <span class="font-weight-bolder">300,000+</span> users</p><a href="#" class="icon icon-lg text-gray mr-3"><span class="fab fa-mailchimp"></span> </a><a href="#" class="icon icon-lg text-gray mr-3"><span class="fab fa-cpanel"></span> </a><a href="#" class="icon icon-lg text-gray mr-3"><span class="fab fa-dhl"></span> </a><a href="#" class="icon icon-lg text-gray mr-3"><span class="fab fa-github-alt"></span> </a><a href="#" class="icon icon-lg text-gray mr-3"><span class="fab fa-aws"></span> </a><a href="#" class="icon icon-lg text-gray"><span class="fab fa-node"></span></a></div>
+                <div class="col-12 text-center">
+                    <button type="button" class="btn btn-secondary animate-up-2" data-toggle="modal" data-target=".pricing-modal"><span class="mr-2"><i class="fas fa-hand-pointer"></i></span>Start 30-days trial</button>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

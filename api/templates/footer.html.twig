@@ -1,94 +1,69 @@
-<footer class="footer col-xs">
+<footer class="footer section pt-6 pt-md-8 pt-lg-10 pb-3 bg-primary text-white overflow-hidden">
+    <div class="pattern top pattern-soft"></div>
     <div class="container">
         <div class="row">
-            {% if application is defined
-                and application.defaultConfiguration.configuration is defined
-                and application.defaultConfiguration.configuration.footer1 is defined
-                and application.defaultConfiguration.configuration.footer1 is not empty %}
-            {% set footer1 = commonground_resource(application.defaultConfiguration.configuration.footer1) %}
-                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 footer1">
-                    {# lets deal with menu's #}
-                    {% if footer1['@type'] == 'Menu' %}
-                        <span class="footer__header">{{ footer1.name }}</span>
-                        <ul class="list list--links footer__nav">
-                            {% for item in footer1.menuItems %}
-                                <li><a href="{{ item.href }}">{{ item.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {# lets deal with templates #}
-                    {% if footer1['@type'] == 'Template' %}
-                        {{ include(template_from_string(footer1.content|raw)) }}
-                    {% endif %}
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <a class="footer-brand mr-lg-5 d-flex" href="/bundles/rocket/index.html">
+                    <img src="/bundles/rocket/assets/img/brand/light.svg" class="mr-3" alt="Footer logo">
+                    <h4>Rocket</h4>
+                </a>
+                <p class="my-4">Conduction Acedemy provides both matchmaking and an online internschip platform</p>
+                <div class="dropdown mb-4 mb-lg-0">
+                    <a id="langsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle footer-language-link pb-2">
+                        <img src="/bundles/rocket/assets/img/flags/united-states-of-america.svg" alt="USA Flag" class="language-flag"> United States
+                        <i class="fas fa-chevron-down ml-1"></i>
+                    </a>
+                    <div aria-labelledby="langsDropdown" class="dropdown-menu dropdown-menu-center mt-0">
+                        <a href="#" class="dropdown-item text-gray text-sm"><img src="/bundles/rocket/assets/img/flags/germany.svg" alt="Germany Flag" class="language-flag"> German</a>
+                        <a href="#" class="dropdown-item text-gray text-sm"><img src="/bundles/rocket/assets/img/flags/spain.svg" alt="Spain Flag" class="language-flag"> Spanish</a>
+                        <a href="#" class="dropdown-item text-gray text-sm"><img src="/bundles/rocket/assets/img/flags/france.svg" alt="France Flag" class="language-flag"> French</a>
+                    </div>
                 </div>
-                {% endif %}
-
-                {% if application is defined
-                    and application.defaultConfiguration.configuration is defined
-                    and application.defaultConfiguration.configuration.footer2 is defined
-                    and application.defaultConfiguration.configuration.footer2 is not empty %}
-                {% set footer2 = commonground_resource(application.defaultConfiguration.configuration.footer2) %}
-                <div class="col-sm-6 col-md-4 col-lg-3 footer2">
-                    {# lets deal with menu's #}
-                    {% if footer2['@type'] == 'Menu' %}
-                        <span class="footer__header">{{ footer2.name }}</span>
-                        <ul class="list list--links footer__nav">
-                            {% for item in footer2.menuItems %}
-                                <li><a href="{{ item.href }}">{{ item.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {# lets deal with templates #}
-                    {% if footer2['@type'] == 'Template' %}
-                        {{ include(template_from_string(footer2.content|raw)) }}
-                    {% endif %}
+            </div>
+            <div class="col-6 col-sm-3 col-lg-2 mb-4 mb-lg-0">
+                <h5>Conduction</h5>
+                <ul class="links-vertical">
+                    <li><a target="_blank" href="https://conduction.nl">About us</a></li>
+                    <li><a target="_blank" href="https://conduction.nl/products">Products</a></li>
+                    <li><a target="_blank" href="https://conduction.nl/contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-sm-3 col-lg-2 mb-4 mb-lg-0">
+                <h5>The Academy</h5>
+                <ul class="links-vertical">
+                    <li><a href="/bundles/rocket/pages/about.html">About</a></li>
+                    <li><a href="/bundles/rocket/pages/pricing.html">Pricing</a></li>
+                    <li><a href="/docs">Documentation</a></li>
+                    <li><a href="/contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <h5>Subscribe</h5>
+                <p class="font-small">The latest Rocket news, articles, and resources, sent straight to your inbox every month.</p>
+                <form action="#">
+                    <div class="form-row">
+                        <div class="col-8">
+                            <input type="email" class="form-control mb-2" placeholder="Email Address" name="email" required>
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-secondary"><span>Subscribe</span></button>
+                        </div>
+                    </div>
+                </form>
+                <small class="mt-2 form-text">We’ll never share your details. See our <a href="/bundles/rocket/pages/terms.html" class="font-weight-bold text-underline">Privacy Policy</a></small>
+            </div>
+        </div>
+        <hr class="my-4 my-lg-5">
+        <div class="row">
+            <div class="col pb-4 mb-md-0">
+                <a href="https://themesberg.com" target="_blank" class="d-flex justify-content-center">
+                    <img src="/bundles/rocket/assets/img/themesberg.svg" height="25" width="25" class="mb-3" alt="Themesberg Logo">
+                </a>
+                <div class="d-flex text-center justify-content-center align-items-center">
+                    <p class="font-weight-normal font-small mb-0">Copyright © <a href="https://themesberg.com" target="_blank">Themesberg</a> <span class="current-year"></span>. All rights reserved.</p>
                 </div>
-            {% endif %}
-
-            {% if application is defined
-                and application.defaultConfiguration.configuration is defined
-                and application.defaultConfiguration.configuration.footer3 is defined
-                and application.defaultConfiguration.configuration.footer3 is not empty %}
-            {% set footer3 = commonground_resource(application.defaultConfiguration.configuration.footer3) %}
-                <div class=" col-sm-6 col-md-4 col-lg-3 footer3">
-                    {# lets deal with menu's #}
-                    {% if footer3['@type'] == 'Menu' %}
-                        <span class="footer__header">{{ footer3.name }}</span>
-                        <ul class="list list--links footer__nav">
-                            {% for item in footer3.menuItems %}
-                                <li><a href="{{ item.href }}">{{ item.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {# lets deal with templates #}
-                    {% if footer3['@type'] == 'Template' %}
-                        {{ include(template_from_string(footer3.content|raw)) }}
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                {% if application is defined
-                    and application.defaultConfiguration.configuration is defined
-                    and application.defaultConfiguration.configuration.footer4 is defined
-                    and application.defaultConfiguration.configuration.footer4 is not empty %}
-                {% set footer4 = commonground_resource(application.defaultConfiguration.configuration.footer4) %}
-                <div class="col-sm-6 col-md-4 col-lg-3 footer4">
-                    {# lets deal with menu's #}
-                    {% if footer4['@type'] == 'Menu' %}
-                        <span class="footer__header">{{ footer4.name }}</span>
-                        <ul class="list list--links footer__nav">
-                            {% for item in footer4.menuItems %}
-                                <li><a href="{{ item.href }}">{{ item.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {# lets deal with templates #}
-                    {% if footer4['@type'] == 'Template' %}
-                        {{ include(template_from_string(footer4.content|raw)) }}
-                    {% endif %}
-                </div>
-            {% endif %}
-
+            </div>
         </div>
     </div>
 </footer>

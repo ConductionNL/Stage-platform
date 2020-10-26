@@ -1,0 +1,73 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <article>
+        <section class="section-header pb-7 pb-lg-10 bg-primary text-white">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-10 text-center">
+                        <div class="mb-4"><a href="./blog.html" class="badge badge-md badge-secondary text-uppercase mr-2 px-3">Seo</a> <a href="./blog.html" class="badge badge-md badge-warning text-uppercase px-3">Marketing</a></div>
+                        <h1 class="display-3 mb-4 px-lg-5">90% of content gets no traffic from Google. How to improve your organic search traffic</h1>
+                        <div class="post-meta"><span class="font-weight-bold mr-3">James Curran</span> <span class="post-date mr-3">January 31, 2020</span> <span class="font-weight-bold">7 min read</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="pattern bottom"></div>
+        </section>
+        <div class="section section-sm bg-white pt-5 text-black">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-8">
+                        <p>Adding a dark mode is basically adding a theme. The principles are the same for adding a light mode to a dark website or alternative styling based on user-defined variables, the time of year or holidays.</p>
+                        <p>I added theming with a mix of and CSS. In this post I’ll go step by step into the details of how I did it and what I learned.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias expedita earum modi sint voluptatum nemo assumenda explicabo laboriosam unde excepturi, necessitatibus consequatur quo! Quis impedit excepturi ut, alias omnis harum?</p>
+                        <p><img src="../assets/img/blog/image-4.jpg" alt="Blog Image"></p>
+                        <h2>Setup</h2>
+                        <p>The themes are <a href="#" class="text-primary">activated by CSS classes</a> on the root element. When the page is loaded, I want to apply the theme that most likely suits the visitor (you!) best. After all, most people don’t like configuring websites before they can read a blog post, so the the whole theming feature would likely remain unused otherwise. So I have to make a guess about what the visitor wants and expects. I do that in this order:</p>
+                        <ol>
+                            <li>I assume people don’t want the theme to change when they navigate between pages. So if the page loaded isn’t the first page they visit, I want to use the theme that was used before.</li>
+                            <li>If it’s the first page they view on my site, their browser may be able to tell their preference.</li>
+                            <li>If no preference is available, we can base the choice based on whether it’s day or night.</li>
+                        </ol>
+                        <p>Every time a page is loaded, in the current or a new tab, it checks if a theme was set previously. Because the preference for a light or dark theme can change during the day, with every change, I add a time stamp to the saved setting. Only when the state was saved less than two hours ago, it’s applied:</p>
+                        <div class="my-4"><pre class="bg-soft rounded language-javascript">                                    <code class=" text-white language-javascript">
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#myModal'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'show.bs.modal'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// stops modal from being shown</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+                                    </code>
+                                </pre></div>
+                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque distinctio nemo tempora similique necessitatibus asperiores inventore ipsum, nostrum velit, quasi vitae natus numquam veritatis nobis, reiciendis deleniti facere molestias a.</p>
+                        <h2>Header 2</h2>
+                        <h3>Header 3</h3>
+                        <h4>Header 4</h4>
+                        <h5>Header 5</h5>
+                        <h6>Header 6</h6>
+                        <p class="my-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi velit perferendis labore vel, necessitatibus laboriosam fugit inventore ad odio tenetur vitae veritatis, earum numquam consectetur voluptatem illum, sequi asperiores commodi?</p>
+                        <ul>
+                            <li>list item 1</li>
+                            <li>list item 2</li>
+                            <li>list item 3</li>
+                        </ul>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit corrupti dolorem at iste perferendis! Modi praesentium vel, rem aliquid illo, nostrum asperiores dolorem corrupti odio tempora impedit deleniti eius voluptatibus.</p>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit corrupti dolorem at iste perferendis! Modi praesentium vel, rem aliquid illo, nostrum asperiores dolorem corrupti odio tempora impedit deleniti eius voluptatibus.</p>
+                    </div>
+                </div>
+                <div class="row justify-content-sm-center align-items-center py-3 mt-3">
+                    <div class="col-12 col-lg-8">
+                        <div class="row">
+                            <div class="col-9 col-md-6">
+                                <h6 class="font-weight-bolder d-inline mb-0 mr-3">Share:</h6>
+                                <button class="btn btn-sm mr-3 btn-icon-only btn-pill btn-twitter d-inline"><span class="btn-inner-icon"><i class="fab fa-twitter"></i></span></button>
+                                <button class="btn btn-sm mr-3 btn-icon-only btn-pill btn-facebook d-inline"><span class="btn-inner-icon"><i class="fab fa-facebook-f"></i></span></button>
+                                <button class="btn btn-sm btn-icon-only btn-pill btn-reddit d-inline"><span class="btn-inner-icon"><i class="fab fa-reddit-alien"></i></span></button>
+                            </div>
+                            <div class="col-3 col-md-6 text-right"><i class="far fa-bookmark text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Bookmark story"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+{% endblock %}
