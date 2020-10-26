@@ -5,8 +5,13 @@
 namespace App\Controller;
 
 //use App\Service\RequestService;
+use Conduction\CommonGroundBundle\Service\ApplicationService;
+use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -33,9 +38,17 @@ class DashboardOrganizationController extends AbstractController
      * @Route("/tutorials")
      * @Template
      */
-    public function tutorialsAction()
+    public function tutorialsAction(Session $session, Request $request, ApplicationService $applicationService, CommonGroundService $commonGroundService, ParameterBagInterface $params)
     {
-        $variables = [];
+        $content = false;
+        $variables = $applicationService->getVariables();
+
+        // Lets provide this data to the template
+        $variables['query'] = $request->query->all();
+        $variables['post'] = $request->request->all();
+
+        // Get resource
+        $variables['resources'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'courses'], $variables['query'])['hydra:member'];
 
         return $variables;
     }
@@ -55,10 +68,17 @@ class DashboardOrganizationController extends AbstractController
      * @Route("/internships")
      * @Template
      */
-    public function internshipsAction()
+    public function internshipsAction(Session $session, Request $request, ApplicationService $applicationService, CommonGroundService $commonGroundService, ParameterBagInterface $params)
     {
-        $variables = [];
+        $content = false;
+        $variables = $applicationService->getVariables();
 
+        // Lets provide this data to the template
+        $variables['query'] = $request->query->all();
+        $variables['post'] = $request->request->all();
+
+        // Get resource
+        $variables['resources'] = $commonGroundService->getResource(['component' => 'mrc', 'type' => 'job_postings'], $variables['query'])['hydra:member'];
         return $variables;
     }
 
