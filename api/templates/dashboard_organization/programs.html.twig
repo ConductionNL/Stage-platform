@@ -36,8 +36,10 @@
                             <div>{% if programs.startDate is defined and programs.startDate is not empty %}
                                 <h4 class="h6 font-weight-normal text-gray mb-3 mb-sm-0"><span class="fas fa-clock mr-2"></span>
                                         startdatum: {{ programs.startDate|date("d-m-Y", "Europe/Paris") }}</h4></div>
+                            {% else %}
+                            <h4 class="h6 font-weight-normal text-gray mb-3 mb-sm-0"><span class="fas fa-clock mr-2"></span>
+                                geen startdatum</h4></div>
                                 {% endif %}
-                            <div class="ml-sm-3"><span class="badge super-badge badge-lg badge-success">Al verlopen</span></div>
                         </div>
                     </div>
                     {% if programs.description is defined and programs.description is not empty %}
