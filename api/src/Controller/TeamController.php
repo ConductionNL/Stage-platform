@@ -39,5 +39,4 @@ class TeamController extends AbstractController
 
         return $variables;
     }
-
 }
