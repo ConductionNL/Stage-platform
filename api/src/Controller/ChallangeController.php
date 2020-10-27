@@ -29,7 +29,6 @@ class ChallangeController extends AbstractController
         return $variables;
     }
 
-
     /**
      * @Route("/{id}")
      * @Template
