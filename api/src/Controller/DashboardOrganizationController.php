@@ -94,6 +94,35 @@ class DashboardOrganizationController extends AbstractController
     }
 
     /**
+     * @Route("/programs")
+     * @Template
+     */
+    public function programsAction(Session $session, Request $request, ApplicationService $applicationService, CommonGroundService $commonGroundService, ParameterBagInterface $params)
+    {
+        $content = false;
+        $variables = $applicationService->getVariables();
+
+        // Lets provide this data to the template
+        $variables['query'] = $request->query->all();
+        $variables['post'] = $request->request->all();
+
+        // Get resource
+        $variables['resources'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'programs'], $variables['query'])['hydra:member'];
+        return $variables;
+    }
+
+    /**
+     * @Route("/programs/{id}")
+     * @Template
+     */
+    public function programAction()
+    {
+        $variables = [];
+
+        return $variables;
+    }
+
+    /**
      * @Route("/challanges")
      * @Template
      */
