@@ -39,7 +39,4 @@ class InternshipController extends AbstractController
 
         return $variables;
     }
-
-
-
 }

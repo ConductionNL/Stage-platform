@@ -79,6 +79,7 @@ class DashboardOrganizationController extends AbstractController
 
         // Get resource
         $variables['resources'] = $commonGroundService->getResource(['component' => 'mrc', 'type' => 'job_postings'], $variables['query'])['hydra:member'];
+
         return $variables;
     }
 
@@ -108,6 +109,7 @@ class DashboardOrganizationController extends AbstractController
 
         // Get resource
         $variables['resources'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'programs'], $variables['query'])['hydra:member'];
+
         return $variables;
     }
 
