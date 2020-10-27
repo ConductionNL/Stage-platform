@@ -7,13 +7,13 @@
                 <div class="col-12 col-md-10 text-center">
                     <h1 class="mb-3">{{ 'find your perfect internschip'|trans|capitalize }}</h1>
                     <p class="lead px-lg-5 mb-5">{{ 'whether you are looking for hands on experiance or a reasearch position we have got it'|trans|capitalize }}.</p>
-                    <form action="#">
+                    <form action="{{ path('app_internship_index', query) }}">
                         <div class="form-group bg-white shadow-soft rounded-pill mb-4 px-3 py-2">
                             <div class="row align-items-center">
                                 <div class="col">
                                     <div class="input-group input-group-merge shadow-none">
                                         <div class="input-group-prepend"><span class="input-group-text bg-transparent border-0"><i class="fas fa-search"></i></span></div>
-                                        <input type="text" class="form-control border-0 form-control-flush shadow-none pb-2" placeholder="{{ 'search for internschips'|trans|capitalize }}..." required="">
+                                        <input name="search" id="search" type="text" class="form-control border-0 form-control-flush shadow-none pb-2" placeholder="{{ 'search for internschips'|trans|capitalize }}..." required="" {% if query.search is defined and query.search is not empty %}value="{{ query.search }}"{% endif %}>
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -70,13 +70,13 @@
                 </div>
             </div>
             <div class="row">
-               {% for i in 1..10 %}
+               {% for intership in interships %}
                 <div class="col-12 mb-4">
                     <div class="card bg-white border-light shadow-soft">
                         <div class="card-body p-4 p-lg-5">
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-4 mb-lg-0">
-                                    <h3 class="mb-3">[name]</h3>
+                                    <h3 class="mb-3">{{ intership.name }}</h3>
                                     <p class="text-gray mb-4">[summary]</p>
                                     <div class="d-flex">
                                         <a href="./career-single.html" class="stretched-link"><i class="fas fa-map-marker-alt"></i><span class="h6 text-sm ml-2">[location]</span></a>
@@ -85,8 +85,8 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex align-items-center justify-content-md-end">
-                                    <a href="{{ path('app_internship_position', {id: 'test'}) }}#apply" class="btn btn-secondary mr-3 animate-up-2 m-0">{{ 'apply'|trans|capitalize }}</a>
-                                    <a href="{{ path('app_internship_position', {id: 'test'}) }}" class="btn btn-primary animate-up-2 m-0"><i class="fas fa-clipboard-list mr-2"></i>{{ 'see details'|trans|capitalize }}</a>
+                                    <a href="{{ path('app_internship_position', {id: intership.id}) }}#apply" class="btn btn-secondary mr-3 animate-up-2 m-0">{{ 'apply'|trans|capitalize }}</a>
+                                    <a href="{{ path('app_internship_position', {id: intership.id}) }}" class="btn btn-primary animate-up-2 m-0"><i class="fas fa-clipboard-list mr-2"></i>{{ 'see details'|trans|capitalize }}</a>
                                 </div>
                             </div>
                         </div>

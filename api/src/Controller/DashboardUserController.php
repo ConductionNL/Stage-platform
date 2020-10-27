@@ -4,10 +4,11 @@
 
 namespace App\Controller;
 
-//use App\Service\RequestService;
+use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The DashboardController test handles any calls that have not been picked up by another test, and wel try to handle the slug based against the wrc.
@@ -24,7 +25,8 @@ class DashboardUserController extends AbstractController
      */
     public function indexAction()
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }
@@ -35,7 +37,8 @@ class DashboardUserController extends AbstractController
      */
     public function tutorialsAction()
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }
@@ -57,7 +60,8 @@ class DashboardUserController extends AbstractController
      */
     public function internshipsAction()
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }
@@ -79,7 +83,8 @@ class DashboardUserController extends AbstractController
      */
     public function challangesAction()
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }
@@ -101,7 +106,8 @@ class DashboardUserController extends AbstractController
      */
     public function teamsAction()
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }

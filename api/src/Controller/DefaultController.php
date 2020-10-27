@@ -4,10 +4,11 @@
 
 namespace App\Controller;
 
-//use App\Service\RequestService;
+use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The Procces test handles any calls that have not been picked up by another test, and wel try to handle the slug based against the wrc.
@@ -22,9 +23,10 @@ class DefaultController extends AbstractController
      * @Route("/")
      * @Template
      */
-    public function indexAction()
+    public function indexAction(CommonGroundService $commonGroundService, Request $request)
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }
@@ -33,7 +35,7 @@ class DefaultController extends AbstractController
      * @Route("/login")
      * @Template
      */
-    public function loginAction()
+    public function loginAction(CommonGroundService $commonGroundService, Request $request)
     {
         $variables = [];
 
@@ -44,7 +46,7 @@ class DefaultController extends AbstractController
      * @Route("/register")
      * @Template
      */
-    public function registerAction()
+    public function registerAction(CommonGroundService $commonGroundService, Request $request)
     {
         $variables = [];
 

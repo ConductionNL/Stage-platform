@@ -7,13 +7,13 @@
                 <div class="col-12 col-md-10 text-center">
                     <h1 class="mb-3">{{ 'tutorials'|trans|capitalize }}</h1>
                     <p class="lead px-lg-5 mb-5">{{ 'tutorials can either be followed by them selfs or as part of a prograamm'|trans|capitalize }}.</p>
-                    <form action="#">
+                    <form action="{{ path('app_education_tutorials', query) }}">
                         <div class="form-group bg-white shadow-soft rounded-pill mb-4 px-3 py-2">
                             <div class="row align-items-center">
                                 <div class="col">
                                     <div class="input-group input-group-merge shadow-none">
                                         <div class="input-group-prepend"><span class="input-group-text bg-transparent border-0"><i class="fas fa-search"></i></span></div>
-                                        <input type="text" class="form-control border-0 form-control-flush shadow-none pb-2" placeholder="{{ 'search for tutorials'|trans|capitalize }}..." required="">
+                                        <input name="search" id="search" type="text" class="form-control border-0 form-control-flush shadow-none pb-2" placeholder="{{ 'search for internschips'|trans|capitalize }}..." required="" {% if query.search is defined and query.search is not empty %}value="{{ query.search }}"{% endif %}>
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -77,14 +77,14 @@
                         </div>
                     </div>
                 </div>
-                {% for i in 1..10 %}
+                {% for tutorial in tutorials %}
                 <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-5">
                     <div class="card bg-white border-light shadow-soft p-4 rounded">
-                        <a href="{{ path('app_education_tutorial', {id: 'test'}) }}"><img src="/bundles/rocket/assets/img/blog/image-2.jpg" class="card-img-top fmxh-300" alt=""></a>
-                        <div class="card-body p-0 pt-4"><a href="{{ path('app_education_tutorial', {id: 'test'}) }}" class="h3">Google launches Cloud AI Platform Pipelines</a>
+                        <a href="{{ path('app_education_tutorial', {id: tutorial.id}) }}"><img src="/bundles/rocket/assets/img/blog/image-2.jpg" class="card-img-top fmxh-300" alt=""></a>
+                        <div class="card-body p-0 pt-4"><a href="{{ path('app_education_tutorial', {id: tutorial.id}) }}" class="h3">{{ tutorial.name }}</a>
                             <div class="d-flex align-items-center my-4"><img class="avatar avatar-sm rounded-circle" src="/bundles/rocket/assets/img/team/profile-picture-2.jpg" alt="">
                                 <h6 class="text-muted small ml-2 mb-0">James Curran</h6></div>
-                            <p class="mb-0">Richard Thomas was born in 1990, and at only 29 years old, his trajectory is good. When he is asked how he describes himself, he responds, "designer but in a broad sense". His projects?</p>
+                            <p class="mb-0">{{ tutorial.description }}</p>
                         </div>
                     </div>
                 </div>

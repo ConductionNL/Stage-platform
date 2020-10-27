@@ -4,10 +4,11 @@
 
 namespace App\Controller;
 
-//use App\Service\RequestService;
+use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The ChallangeController test handles any calls that have not been picked up by another test, and wel try to handle the slug based against the wrc.
@@ -22,9 +23,13 @@ class ChallangeController extends AbstractController
      * @Route("/")
      * @Template
      */
-    public function indexAction()
+    public function indexAction(CommonGroundService $commonGroundService, Request $request)
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
+
+        // Get resource challanges (known as tender component side)
+        $variables['challanges'] = $commonGroundService->getResource(['component' => 'chrc', 'type' => 'tenders'], $variables['query'])['hydra:member'];
 
         return $variables;
     }
@@ -34,9 +39,12 @@ class ChallangeController extends AbstractController
      * @Route("/{id}")
      * @Template
      */
-    public function challangeAction($id)
+    public function challangeAction(CommonGroundService $commonGroundService, Request $request, $id)
     {
         $variables = [];
+
+        // Get resource challanges (known as tender component side)
+        $variables['challange'] = $commonGroundService->getResource(['component' => 'chrc', 'type' => 'tenders', 'id' => $id]);
 
         return $variables;
     }

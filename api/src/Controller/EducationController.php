@@ -4,10 +4,11 @@
 
 namespace App\Controller;
 
-//use App\Service\RequestService;
+use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The EducationController test handles any calls that have not been picked up by another test, and wel try to handle the slug based against the wrc.
@@ -24,7 +25,8 @@ class EducationController extends AbstractController
      */
     public function indexAction()
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
 
         return $variables;
     }
@@ -33,9 +35,13 @@ class EducationController extends AbstractController
      * @Route("/tutorials")
      * @Template
      */
-    public function tutorialsAction()
+    public function tutorialsAction(CommonGroundService $commonGroundService, Request $request)
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
+
+        // Get resource tutorials (known as cources component side)
+        $variables['tutorials'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'courses'], $variables['query'])['hydra:member'];
 
         return $variables;
     }
@@ -44,9 +50,12 @@ class EducationController extends AbstractController
      * @Route("/tutorials/{id}")
      * @Template
      */
-    public function tutorialAction($id = null)
+    public function tutorialAction(CommonGroundService $commonGroundService, Request $request, $id)
     {
         $variables = [];
+
+        // Get resource tutorial
+        $variables['tutorial'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'courses', 'id' => $id]);
 
         return $variables;
     }
@@ -55,9 +64,13 @@ class EducationController extends AbstractController
      * @Route("/programs")
      * @Template
      */
-    public function programsAction()
+    public function programsAction(CommonGroundService $commonGroundService, Request $request)
     {
-        $variables = [];
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
+
+        // Get resources programs
+        $variables['programs'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'programs'], $variables['query'])['hydra:member'];
 
         return $variables;
     }
@@ -66,9 +79,12 @@ class EducationController extends AbstractController
      * @Route("/programs/{id}")
      * @Template
      */
-    public function programAction($id = null)
+    public function programAction(CommonGroundService $commonGroundService, Request $request, $id )
     {
         $variables = [];
+
+        // Get resource program
+        $variables['tutorial'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'programs', 'id' => $id]);
 
         return $variables;
     }
