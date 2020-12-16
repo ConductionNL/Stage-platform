@@ -3,14 +3,14 @@ entries:
   stage-platform:
   - apiVersion: v1
     appVersion: V1.0
-    created: "2020-12-14T08:58:51.9127425Z"
+    created: "2020-12-16T14:26:24.2682316Z"
     description: Naast deze JSON rest API is er ook een [graphql](/graphql) interface
       beschikbaar.
-    digest: 54f20a58226646e2aab68112a7e63272df86dd15f9eabe2b6d0df1cff8627654
+    digest: 62bc35fb5eef29c041bae43f493605567734ca35eed456c5c9f52fcf0903687b
     home: www.stage-platform.com
     icon: www.stage-platform.com
     name: stage-platform
     urls:
     - stage-platform-0.1.0.tgz
     version: 0.1.0
-generated: "2020-12-14T08:58:51.9058614Z"
+generated: "2020-12-16T14:26:24.2589677Z"

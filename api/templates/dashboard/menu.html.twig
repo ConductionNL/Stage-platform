@@ -5,7 +5,7 @@
             </div>
             <div class="d-block">
                 <h2 class="h6">{% if app.user.username is defined %}{{ app.user.username }}{% endif %}</h2>
-                <h2 class="h6">{% if app.user.organization is defined %}{% set organization = commonground_resource(app.user.organization) %}{{ organization['name'] }}{% endif %}</h2>
+                <h2 class="h6">{% if app.user.organization|default %}{% set organization = commonground_resource(app.user.organization) %}{{ organization['name'] }}{% endif %}</h2>
                 <a href="{{ path('app_user_logout') }}" class="btn btn-secondary btn-xs"><span class="mr-2"><span class="fas fa-sign-out-alt"></span></span>{{ 'logout'|trans|capitalize }}</a></div>
         </div>
         <div class="collapse-close d-md-none">

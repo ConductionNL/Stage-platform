@@ -36,7 +36,13 @@ class DashboardUserController extends AbstractController
 
         // Get random unfilterd data
         $variables['challenges'] = $commonGroundService->getResource(['component' => 'chrc', 'type' => 'tenders'], $variables['query'])['hydra:member'];
-        $variables['internships'] = $commonGroundService->getResource(['component' => 'mrc', 'type' => 'job_postings'], $variables['query'])['hydra:member'];
+        $variables['employee'] = $commonGroundService->getResource(['component' => 'mrc', 'type' => 'employees'], ['person' => $this->getUser()->getPerson()])['hydra:member'][0];
+
+        if (isset($variables['employee']) && $variables['employee']) {
+            foreach ($variables['employee']['contracts'] as $contract) {
+                $variables['positions'][] = $contract;
+            }
+        }
 
         //  Getting the participant @todo this needs to be more foolproof
         if ($this->getUser()) {
@@ -353,14 +359,14 @@ class DashboardUserController extends AbstractController
             $person['name'] = $name;
             $person['aboutMe'] = $request->get('aboutMe');
             $person['emails'][0] = [];
-            $person['emails'][0]['name'] = 'email for '.$name;
+            $person['emails'][0]['name'] = 'email for ' . $name;
             $person['emails'][0]['email'] = $request->get('email');
             $person['telephones'][0] = [];
-            $person['telephones'][0]['name'] = 'telephone for '.$name;
+            $person['telephones'][0]['name'] = 'telephone for ' . $name;
             $person['telephones'][0]['telephone'] = $request->get('telephone');
 
             $address = [];
-            $address['name'] = 'address for '.$name;
+            $address['name'] = 'address for ' . $name;
             $address['street'] = $request->get('street');
             $address['houseNumber'] = $request->get('houseNumber');
             $address['houseNumberSuffix'] = $request->get('houseNumberSuffix');
@@ -369,8 +375,8 @@ class DashboardUserController extends AbstractController
             $person['adresses'][0] = $address;
 
             $socials = [];
-            $socials['name'] = 'socials for '.$name;
-            $socials['description'] = 'socials for '.$name;
+            $socials['name'] = 'socials for ' . $name;
+            $socials['description'] = 'socials for ' . $name;
             $socials['facebook'] = $request->get('facebook');
             $socials['twitter'] = $request->get('twitter');
             $socials['linkedin'] = $request->get('linkedin');
@@ -387,7 +393,7 @@ class DashboardUserController extends AbstractController
                 if (!$commonGroundService->isResource($this->getUser()->getPerson()) or !isset($user['person'])) {
                     $user['person'] = $commonGroundService->cleanUrl(['component' => 'cc', 'type' => 'people', 'id' => $person['id']]);
                     foreach ($user['userGroups'] as &$userGroup) {
-                        $userGroup = '/groups/'.$userGroup['id'];
+                        $userGroup = '/groups/' . $userGroup['id'];
                     }
                     $commonGroundService->updateResource($user);
                 }
@@ -397,7 +403,7 @@ class DashboardUserController extends AbstractController
             if (isset($variables['portfolio'])) {
                 $portfolio = $variables['portfolio'];
             }
-            $portfolio['name'] = 'portfolio of '.$name;
+            $portfolio['name'] = 'portfolio of ' . $name;
             $portfolio['owner'] = $commonGroundService->cleanUrl(['component' => 'cc', 'type' => 'people', 'id' => $person['id']]);
             $portfolio = $commonGroundService->saveResource($portfolio, ['component' => 'pfc', 'type' => 'portfolios']);
 
@@ -505,7 +511,7 @@ class DashboardUserController extends AbstractController
             $resource = array_merge($variables['item'], $resource);
 
             if (isset($resource['style'])) {
-                $resource['style'] = '/styles/'.$resource['style']['id'];
+                $resource['style'] = '/styles/' . $resource['style']['id'];
             }
 
             if ($newOrganization) {
@@ -536,19 +542,19 @@ class DashboardUserController extends AbstractController
                 $newUserGroup['title'] = $resource['nameUG'];
                 $newUserGroup['organization'] = $variables['item']['@id'];
                 $newUserGroup['canBeRegisteredFor'] = true;
-                $newUserGroup['users'][] = 'users/'.$user['id'];
+                $newUserGroup['users'][] = 'users/' . $user['id'];
 
                 $newUserGroup = $commonGroundService->saveResource($newUserGroup, ['component' => 'uc', 'type' => 'groups']);
             }
 
             if (count($variables['userGroups']) == 0) {
                 $userGroup = [];
-                $userGroup['name'] = $variables['item']['name'].'-admin';
+                $userGroup['name'] = $variables['item']['name'] . '-admin';
                 $userGroup['organization'] = $variables['item']['@id'];
                 $userGroup['description'] = 'The administrators for the organization';
-                $userGroup['code'] = $variables['item']['name'].'-admin';
+                $userGroup['code'] = $variables['item']['name'] . '-admin';
                 $userGroup['canBeRegisteredFor'] = false;
-                $userGroup['users'][] = 'users/'.$user['id'];
+                $userGroup['users'][] = 'users/' . $user['id'];
 
                 $userGroup = $commonGroundService->saveResource($userGroup, ['component' => 'uc', 'type' => 'groups']);
             } else {
@@ -598,9 +604,9 @@ class DashboardUserController extends AbstractController
             $mailingService->sendMail('mails/invoice.html.twig', 'no-reply@conduction.academy', $this->getUser()->getUsername(), 'invoice', $data);
 
             if ($result['status'] == 'paid') {
-                $variables['message'] = 'Payment processed successfully! <br> €'.$result['amount'].'.00 was added to your balance. <br>  Invoice with reference: '.$result['reference'].' is created.';
+                $variables['message'] = 'Payment processed successfully! <br> €' . $result['amount'] . '.00 was added to your balance. <br>  Invoice with reference: ' . $result['reference'] . ' is created.';
             } else {
-                $variables['message'] = 'Something went wrong, the status of the payment is: '.$result['status'].' please try again.';
+                $variables['message'] = 'Something went wrong, the status of the payment is: ' . $result['status'] . ' please try again.';
             }
         }
 

@@ -3528,7 +3528,7 @@
       </trans-unit>
       <trans-unit id="LXCZmuG" resname="reviewer">
         <source>reviewer</source>
-        <target>__reviewer</target>
+        <target>reviewer</target>
       </trans-unit>
       <trans-unit id="Vjk0eA_" resname="no organization">
         <source>no organization</source>
@@ -3537,6 +3537,14 @@
       <trans-unit id="P9AQm8A" resname="accepted on">
         <source>accepted on</source>
         <target>geaccepteerd op</target>
+      </trans-unit>
+      <trans-unit id="ubh21na" resname="accepted">
+        <source>accepted</source>
+        <target>geaccepteerd</target>
+      </trans-unit>
+      <trans-unit id="MnbA3xA" resname="rejected">
+        <source>rejected</source>
+        <target>afgekeurd</target>
       </trans-unit>
       <trans-unit id="A5z9i9Y" resname="no status">
         <source>no status</source>

@@ -19,18 +19,24 @@
                 </thead>
                 <tbody>
                 {% for item in items|slice(0, 10) %}
-                    {% if item.course.organization|default and 'http' in item.course.organization %}
-                        {% set organization = commonground_resource(item.course.organization) %}
+                    {% if item.course|default %}
                         {% set path = path('app_dashboarduser_tutorial', {'id': item.course.id}) %}
-                    {% elseif item.program.organization|default and 'http' in item.program.organization %}
-                        {% set organization = commonground_resource(item.program.organizationn) %}
+                    {% elseif item.program|default %}
                         {% set path = path('app_dashboarduser_program', {'id': item.program.id}) %}
-                    {% elseif item.groups.0.organization|default and 'http' in item.groups.0.organization %}
-                        {% set organization = commonground_resource(item.groups.0.organization) %}
-                        {% set path = path('app_dashboarduser_team', {'id': item.groups.0.id}) %}
+                    {% elseif item.participantGroup|default %}
+                        {% set path = path('app_dashboarduser_team', {'id': item.participantGroup.id}) %}
+                    {% else %}
+                        {% set path = null %}
+                    {% endif %}
+
+                    {% if item.course.organization|default and 'http' in item.course.organization %}
+                        {% set organization = commonground_resource(item.course.organization).name %}
+                    {% elseif item.program.organization|default and 'http' in item.program.organization %}
+                        {% set organization = commonground_resource(item.program.organization).name %}
+                    {% elseif item.participantGroup.organization|default and 'http' in item.groups.0.organization %}
+                        {% set organization = commonground_resource(item.participantGroup.organization).name %}
                     {% else %}
                         {% set organization = null %}
-                        {% set path = null %}
                     {% endif %}
                     <tr
                         {% if item.status|default and item.status == 'rejected' %}
@@ -45,18 +51,18 @@
                             <td>{{ item.course.name|capitalize }}</td>
                         {% elseif item.program|default %}
                             <td>{{ item.program.name|capitalize }}</td>
-                        {% elseif item.groups|default %}
-                            <td>{{ item.groups.0.name }}</td>
+                        {% elseif item.participantGroup|default %}
+                            <td>{{ item.participantGroup.name }}</td>
                         {% endif %}
                         {% if organization|default %}
-                            <td>{{ organization.name|capitalize }}</td>
+                            <td>{{ organization|capitalize }}</td>
                         {% else %}
                             <td style="color: lightgrey">{{ 'no organization'|trans|capitalize }}</td>
                         {% endif %}
                         {% if item.status|default and item.status == 'accepted' %}
                             <td>{{ 'accepted on'|trans|capitalize~' '~item.dateOfAcceptance|date('d-m-Y', 'Europe/Amsterdam') }}</td>
                         {% elseif item.status|default %}
-                            <td>{{ item.status|capitalize }}</td>
+                            <td>{{ item.status|capitalize|trans }}</td>
                         {% else %}
                             <td style="color: lightgrey">{{ 'no status'|trans|capitalize }}</td>
                         {% endif %}
