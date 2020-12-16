@@ -6,12 +6,19 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8 text-center">
                     <h1 class="display-2 mb-3">{{ challenge.name }}</h1>
-                    <p class="lead">{{ challenge.description }}</p>
-                    <div class="col col-12 text-center"><a href="{{ path('app_challenge_index') }}"
-                                                           class="btn btn-secondary text-white animate-up-2 mr-3"><i
-                                class="fas fa-arrow-left mr-2"></i>{{ 'See all challenges'|trans|capitalize }}</a><a
-                            href="#apply" class="btn btn-white text-primary animate-up-2"><i
-                                class="fas fa-clipboard-list mr-2"></i>{{ 'Apply Now'|trans|capitalize }}</a></div>
+
+                    <div class="col col-12 text-center">
+                        <a href="{{ path('app_challenge_index') }}" class="btn btn-secondary text-white animate-up-2 mr-3">
+                            <i class="fas fa-arrow-left mr-2"></i>{{ 'See all challenges'|trans|capitalize }}
+                        </a>
+                        <a href="#apply" class="btn btn-white text-primary animate-up-2"><i class="fas fa-clipboard-list mr-2"></i>{{ 'Apply Now'|trans|capitalize }}</a>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <p class="paragraph--l" style="color: black">{{ challenge.description }}</p>
                 </div>
             </div>
         </div>
@@ -79,7 +86,9 @@
                         </div>
                     </div>
                 {% else %}
-                    <p>{{ 'there are no rewards'|trans|capitalize }}</p>
+                    <div class="card">
+                        <p class="card-body">{{ 'there are no rewards'|trans|capitalize }}</p>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -87,9 +96,11 @@
     <section class="section section-lg pt-0 line-bottom-light">
         <div class="container">
             <div class="row justify-content-center mb-5 mb-lg-6">
-                <div class="col-12 col-md-8 text-center">
-                    <h1 class="display-3 mb-4">{{ 'The stages'|trans|capitalize }}</h1>
-                    <p class="lead">{{ 'This challenge consists of several stages'|trans|capitalize }}</p>
+                <div class="card">
+                    <div class="col-12 col-md-8 text-center card-body">
+                        <h1 class="display-3 mb-4 text-center">{{ 'The stages'|trans|capitalize }}</h1>
+                        <p class="lead">{{ 'This challenge consists of several stages'|trans|capitalize }}</p>
+                    </div>
                 </div>
             </div>
             <div class="row">

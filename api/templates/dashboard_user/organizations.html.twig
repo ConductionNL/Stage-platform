@@ -41,8 +41,8 @@
                                 <table class="table align-items-center table-flush">
                                     <thead class="thead-light">
                                     <tr>
-                                        <th scope="col">{{ 'select'|trans|capitalize }}</th>
                                         <th scope="col">{{ 'name'|trans|capitalize }}</th>
+                                        <th scope="col"></th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
@@ -51,14 +51,16 @@
                                     {% if items|default %}
                                         {% for item in items %}
                                             <tr>
-                                                <td>
-                                                    <input type="radio" name="organization"
-                                                           value="{{ item['@id'] }}"
-                                                           {% if app.user.organization|default and app.user.organization == item['@id'] %}checked{% endif %}>
-                                                </td>
                                                 <td>{{ item.name }}</td>
                                                 <td></td>
-                                                <td style="float: right">
+                                                <td class="text-right">
+                                                    {% if organization['name'] != item['name'] %}
+                                                        <button class="btn btn btn-primary" name="organization"
+                                                                value="{{ item['@id'] }}"
+                                                                type="submit">{{ 'inloggen met deze organisatie'|trans|capitalize }}</button>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-right">
                                                     <a href="{{ path(pathToSingular,{'id': item.id}) }}"
                                                        class="btn btn btn-primary">{{ 'view'|trans|capitalize }}</a>
                                                 </td>
@@ -66,14 +68,18 @@
                                         {% endfor %}
                                     {% elseif organization|default %}
                                         <tr>
-                                            <td><input type="radio" name="organization"
-                                                       value="{{ organization['@id'] }}"
-                                                       checked>
-                                            </td>
+                                            <td></td>
                                             <td>{{ organization.name }}</td>
                                             <td>
                                                 <a href="{{ path(pathToSingular,{'id': organization.id}) }}"
                                                    class="btn btn btn-primary">{{ 'view'|trans|capitalize }}</a>
+                                            </td>
+                                            <td>
+                                                {% if organization['name'] != organization['name'] %}
+                                                    <button class="btn btn btn-primary" name="organization"
+                                                            value="{{ organization['@id'] }}"
+                                                            type="submit">{{ 'inloggen met deze organisatie'|trans|capitalize }}</button>
+                                                {% endif %}
                                             </td>
                                             <td>
                                                 <a href="{{ '#edit'~organization.id~'Modal' }}"
@@ -95,8 +101,7 @@
                                     </tbody>
                                 </table>
                                 <div class="d-flex justify-content-around" style="margin-bottom: 20px;">
-                                    <button class="d-inline-block float-right btn btn btn-primary col-md-3"
-                                            type="submit">{{ 'save'|trans|capitalize }}</button>
+
                                 </div>
                             </form>
                         </div>

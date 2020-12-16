@@ -79,7 +79,13 @@
                             <h2 class="h1">{{ 'apply for this team'|trans|capitalize }}</h2>
                         </div>
 
-                        {% if app.user is defined and app.user is not null %}
+                        {% if userIsInTeam is defined and userIsInTeam %}
+                            <p class="mt-4 text-center">{{ 'you have already applied for this team'|trans|capitalize }}</p>
+                            <a class="mt-2 text-center btn btn-secondary"
+                               href="{{ path('app_dashboarduser_team', {id: team.id}) }}">
+                                {{ 'click here to participate'|trans|capitalize }}
+                            </a>
+                        {% elseif app.user is defined and app.user is not null %}
                             <form action="{{ path('app_team_team', {id: team.id}) }}" method="post">
                                 <div class="row">
                                     <div class="col col-12 mt-4">

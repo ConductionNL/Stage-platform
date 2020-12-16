@@ -33,18 +33,15 @@
             </div>
         </form>
         </div>
-
-
         <div class="pattern bottom"></div>
     </section>
     <section class="section section-lg pt-0">
         <div class="
         {% if students|default and students|length > 0 %}
         container mt-n10
-{% else %}
+        {% else %}
         container
-        {% endif %}
-">
+        {% endif %}">
             <div class="row mt-6">
                 {% if students|default %}
                     {% for student in students %}
@@ -52,7 +49,16 @@
                             <div class="profile-card mb-7">
                                 <div class="card shadow-soft border-light text-center">
                                     <div class="card-body">
-
+                                                <a href="{{ path('app_student_index', {id: student.id}) }}" style="margin-left: auto; margin-right: auto">
+                                                    <img
+                                                        {% if student.personalPhoto is defined and student.personalPhoto is not empty %}
+                                                            src="{{ student.personalPhoto }}"
+                                                        {% else %}
+                                                            src="/bundles/rocket/assets/img/blog/image-2.jpg"
+                                                        {% endif %}
+                                                        alt="">
+                                                </a>
+                                        <br><br>
                                         {% if student.name|default %}
                                             <span class="card__title"><h4>{{ student.name }}</h4></span>
                                         {% endif %}
@@ -140,9 +146,9 @@
                                                 <li>
                                                     <a class="btn btn-primary"
                                                        href="{{ path('app_student_portfolio', {id: student.id}) }}">{{ 'view portfolio'|trans|capitalize }}</a>
-
                                                 </li>
                                             </ul>
+                                            <br>
                                         {% endif %}
 
 

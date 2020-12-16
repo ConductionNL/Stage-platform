@@ -42,6 +42,11 @@ class DashboardOrganizationController extends AbstractController
     public function tutorialsAction(CommonGroundService $commonGroundService, Request $request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (empty($this->getUser()->getOrganization())) {
+            return $this->redirect($this->generateUrl('app_default_organization').'?backUrl='.$this->generateUrl('app_dashboardorganization_tutorials'));
+        }
+
         $variables = [];
 
         $variables['addPath'] = 'app_dashboardorganization_tutorial';
@@ -69,6 +74,8 @@ class DashboardOrganizationController extends AbstractController
         $variables['organizations'] = $commonGroundService->getResourceList(['component' => 'wrc', 'type' => 'organizations'])['hydra:member'];
         $variables['activities'] = $commonGroundService->getResourceList(['component' => 'edu', 'type' => 'activities'])['hydra:member'];
         $variables['requirements'] = $commonGroundService->getResourceList(['component' => 'edu', 'type' => 'courses'])['hydra:member'];
+        $variables['skills'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'skills'])['hydra:member'];
+        $variables['competences'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'competences'])['hydra:member'];
 
         if ($id != 'new') {
             // Get resource tutorial (known as course component side)
@@ -101,6 +108,11 @@ class DashboardOrganizationController extends AbstractController
     public function internshipsAction(CommonGroundService $commonGroundService, Request $request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (empty($this->getUser()->getOrganization())) {
+            return $this->redirect($this->generateUrl('app_default_organization').'?backUrl='.$this->generateUrl('app_dashboardorganization_internships'));
+        }
+
         $variables = [];
 
         $variables['addPath'] = 'app_dashboardorganization_internship';
@@ -175,6 +187,11 @@ class DashboardOrganizationController extends AbstractController
     public function challengesAction(Request $request, CommonGroundService $commonGroundService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (empty($this->getUser()->getOrganization())) {
+            return $this->redirect($this->generateUrl('app_default_organization').'?backUrl='.$this->generateUrl('app_dashboardorganization_challenges'));
+        }
+
         $variables = [];
 
         // On an index route we might want to filter based on user input
@@ -400,10 +417,10 @@ class DashboardOrganizationController extends AbstractController
             $participation = $commonGroundService->getResource($resource['id']);
 
             $participation['status'] = $resource['status'];
-            unset($participation['groups']);
+            unset($participation['participantGroup']);
             unset($participation['course']);
             unset($participation['program']);
-            if ($participation['status'] == 'accpeted') {
+            if ($participation['status'] == 'accepted') {
                 $participation['dateOfAcceptance'] = new Date('today');
             } else {
                 $participation['dateOfAcceptance'] = null;
@@ -426,16 +443,6 @@ class DashboardOrganizationController extends AbstractController
                         isset($part['program']['organization']) &&
                         $part['program']['organization'] == $this->getUser()->getOrganization()) {
                         $variables['participants'][] = $part;
-                    } elseif (isset($part['groups']) && count($part['groups']) > 0) {
-                        foreach ($part['groups'] as $group) {
-                            if (isset($group['organization']) && $group['organization'] == $this->getUser()->getOrganization()) {
-                                $addPart = true;
-                            }
-                        }
-                        if ($addPart == true) {
-                            $variables['participants'][] = $part;
-                            $addPart = false;
-                        }
                     }
                     $participantIds[] = $part['id'];
                 }
@@ -454,13 +461,17 @@ class DashboardOrganizationController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $variables = [];
 
-        $variables['invoices'] = $commonGroundService->getResourceList(['component' => 'bc', 'type' => 'invoices'])['hydra:member'];
+        if (!empty($this->getUser()->getOrganization())) {
+            $organization = $commonGroundService->getResource($this->getUser()->getOrganization());
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
+            $variables['invoices'] = $commonGroundService->getResourceList(['component' => 'bc', 'type' => 'invoices'], ['customer' => $organizationUrl])['hydra:member'];
+        }
 
         return $variables;
     }
 
     /**
-     * @Route("/invoice")
+     * @Route("/invoice/{id}")
      * @Template
      */
     public function invoiceAction(CommonGroundService $commonGroundService, Request $request, $id)
@@ -469,12 +480,35 @@ class DashboardOrganizationController extends AbstractController
         $variables = [];
 
         $variables['invoice'] = $commonGroundService->getResource(['component' => 'bc', 'type' => 'invoices', 'id' => $id]);
-        $variables['organization'] = $commonGroundService->getResource($variables['invoice']['targetOrganization']);
-        $variables['organization']['contact'] = $commonGroundService->getResource($variables['organization']['contact']);
-        $variables['style'] = $variables['organization']['style'];
-        $variables['customer'] = $commonGroundService->getResource($variables['invoice']['customer']);
 
         /*@todo make payment process*/
+
+        return $variables;
+    }
+
+    /**
+     * @Route("/conduction")
+     * @Template
+     */
+    public function conductionAction(CommonGroundService $commonGroundService, Request $request)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $variables = [];
+
+        $variables['challenges'] = $commonGroundService->getResourceList(['component' => 'chrc', 'type' => 'tenders'])['hydra:member'];
+        $variables['stages'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'job_postings'])['hydra:member'];
+
+        if (count($variables['stages']) > 0) {
+            foreach ($variables['stages'] as &$stage) {
+                $appliedFor = false;
+                $applications = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'applications'], ['jobPosting.id' => $stage['id']])['hydra:member'];
+                if (count($applications) > 0) {
+                    $appliedFor = true;
+                }
+
+                $stage['appliedFor'] = $appliedFor;
+            }
+        }
 
         return $variables;
     }
