@@ -47,56 +47,43 @@
                     {% for student in students %}
                         <div class="col-md-6 col-lg-4">
                             <div class="profile-card mb-7">
-                                <div class="card shadow-soft border-light text-center">
-                                    <div class="card-body">
-                                                <a href="{{ path('app_student_index', {id: student.id}) }}" style="margin-left: auto; margin-right: auto">
-                                                    <img
-                                                        {% if student.personalPhoto is defined and student.personalPhoto is not empty %}
-                                                            src="{{ student.personalPhoto }}"
-                                                        {% else %}
-                                                            src="/bundles/rocket/assets/img/blog/image-2.jpg"
+                                <div class="card shadow-soft border-light text-center" style="min-height: 343px">
+                                    <div class="profile-image">
+                                        <a href="{{ path('app_student_index', {id: student.id}) }}">
+                                            <img{% if student.personalPhoto is defined and student.personalPhoto is not empty %}
+                                                src="{{ student.personalPhoto }}"
+                                            {% else %}
+                                                src="/bundles/rocket/assets/img/blog/image-2.jpg"
+                                                {% endif %}
+                                                style="width: 160px; height: 160px; object-fit: cover" class="card-img-top" alt="image">
+                                        </a>
+                                    </div>
+                                    <div class="card-body mt-n5">
+                                        <div>
+                                            <h5 class="card-title">{{ student.name }}</h5>
+                                            <h6 class="card-subtitle">{% if student.emails[0].email is defined %}{{ student.emails[0].email }}{% else %} {% endif %}</h6>
+                                            <div class="card-text my-2">
+                                                {% set participants = commonground_resource_list({'component':'edu','type':'participants'}, {'person':student['@id']})['hydra:member'] %}
+                                                {% set tutorialCount = 0 %}
+                                                {% set teamCount = 0 %}
+                                                {% if participants|default %}
+                                                    {% for participant in participants %}
+                                                        {% if participant.course|default %}
+                                                            {% set tutorialCount = tutorialCount + 1 %}
                                                         {% endif %}
-                                                        alt="">
-                                                </a>
-                                        <br><br>
-                                        {% if student.name|default %}
-                                            <span class="card__title"><h4>{{ student.name }}</h4></span>
-                                        {% endif %}
-                                        {% if student.emails|default %}
-                                            {% for email in student.emails %}
-                                                <p class="card-text my-2">{{ email.email }}</p>
-                                            {% endfor %}
-                                        {% endif %}
-
-                                        {% set participants = commonground_resource_list({'component':'edu','type':'participants'}, {'person':student['@id']})['hydra:member'] %}
-                                        {% set tutorialCount = 0 %}
-                                        {% set teamCount = 0 %}
-                                        {% if participants|default %}
-                                            {% for participant in participants %}
-                                                {% if participant.course|default %}
-                                                    {% set tutorialCount = tutorialCount + 1 %}
+                                                        {% if participant.courses|default %}
+                                                            {% set teamCount = teamCount + participant.groups|length %}
+                                                        {% endif %}
+                                                    {% endfor %}
                                                 {% endif %}
-                                                {% if participant.courses|default %}
-                                                    {% set teamCount = teamCount + participant.groups|length %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
-
-                                        {% if (teamCount|default and teamCount != 0) or (tutorialCount|default and tutorialCount != 0) %}
-                                            <ul class="social-buttons pb-2">
-                                                {% if tutorialCount|default and tutorialCount != 0 %}
-                                                    <li>
+                                                <ul class="social-buttons">
+                                                    <li class="mr-2">
                                                         <i class="fas fa-briefcase"></i> {{ tutorialCount }}</li>
-                                                {% endif %}
-                                                {% if teamCount|default and teamCount != 0 %}
                                                     <li>
                                                         <i class="fas fa-users"></i> {{ teamCount }}</li>
-                                                {% endif %}
-                                            </ul>
-                                        {% endif %}
-
-                                        {% if student.socials|default %}
-                                            <ul class="social-buttons pb-2">
+                                                </ul>
+                                            </div>
+                                            <ul class="social-buttons my-2">
                                                 {% if student.socials.0.facebook|default %}
                                                     <li>
                                                         <a href="{{ student.socials.0.facebook }}" target="_blank"
@@ -132,26 +119,17 @@
                                                 {% if student.socials.0.website|default %}
                                                     <li>
                                                         <a href="{{ student.socials.0.website }}" target="_blank"
-                                                           class="btn btn-link btn-dribbble">
+                                                           class="btn btn-link btn-dribble">
                                                             <i class="fad fa-browser"></i>
                                                         </a>
                                                     </li>
                                                 {% endif %}
                                             </ul>
-                                        {% endif %}
-
-
-                                        {% if student.id|default %}
-                                            <ul class="social-buttons pt-3">
-                                                <li>
-                                                    <a class="btn btn-primary"
-                                                       href="{{ path('app_student_portfolio', {id: student.id}) }}">{{ 'view portfolio'|trans|capitalize }}</a>
-                                                </li>
-                                            </ul>
-                                            <br>
-                                        {% endif %}
-
-
+                                            <div>
+                                                <a class="btn btn-primary"
+                                                   href="">{{ 'view portfolio'|trans|capitalize }}</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

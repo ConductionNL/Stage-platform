@@ -77,6 +77,14 @@ class DashboardOrganizationController extends AbstractController
         $variables['skills'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'skills'])['hydra:member'];
         $variables['competences'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'competences'])['hydra:member'];
 
+        if ($this->getUser()->getOrganization()) {
+            $organization = $commonGroundService->getResource($this->getUser()->getOrganization());
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
+            $variables['products'] = $commonGroundService->getResourceList(['component' => 'pdc', 'type' => 'products'], ['sourceOrganization' => $organizationUrl])['hydra:member'];
+        } else {
+            $variables['products'] = [];
+        }
+
         if ($id != 'new') {
             // Get resource tutorial (known as course component side)
             $variables['tutorial'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'courses', 'id' => $id]);
@@ -88,11 +96,8 @@ class DashboardOrganizationController extends AbstractController
         // Lets see if there is a post to procces
         if ($request->isMethod('POST')) {
             $resource = $request->request->all();
-            // Add the post data to the already aquired resource data
-//            $resource = array_merge($variables['tutorial'], $resource);
-            // Update to the commonground component
-            var_dump($resource);
-//            die;
+
+            $resource['organization'] = $organizationUrl;
             $variables['tutorial'] = $commonGroundService->saveResource($resource, ['component' => 'edu', 'type' => 'courses']);
 
             return $this->redirect($this->generateUrl('app_dashboardorganization_tutorials'));
@@ -253,6 +258,80 @@ class DashboardOrganizationController extends AbstractController
             $variables['challenge'] = $commonGroundService->saveResource($resource, ['component' => 'chrc', 'type' => 'tenders']);
 
             return $this->redirect($this->generateUrl('app_dashboardorganization_challenges'));
+        }
+
+        return $variables;
+    }
+
+    /**
+     * @Route("/products")
+     * @Template
+     */
+    public function productsAction(Request $request, CommonGroundService $commonGroundService)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (empty($this->getUser()->getOrganization())) {
+            return $this->redirect($this->generateUrl('app_default_organization').'?backUrl='.$this->generateUrl('app_dashboardorganization_products'));
+        }
+
+        $variables = [];
+
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
+
+        // Get resource challenges (known as tender component side)
+        if ($this->getUser()->getOrganization()) {
+            $organization = $commonGroundService->getResource($this->getUser()->getOrganization());
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
+            $variables['products'] = $commonGroundService->getResourceList(['component' => 'pdc', 'type' => 'products'], ['sourceOrganization' => $organizationUrl])['hydra:member'];
+        } else {
+            $variables['products'] = [];
+        }
+
+        $variables['addPath'] = 'app_dashboardorganization_product';
+
+        return $variables;
+    }
+
+    /**
+     * @Route("/products/{id}")
+     * @Template
+     */
+    public function productAction(Request $request, CommonGroundService $commonGroundService, $id)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $variables = [];
+
+        if ($this->getUser()->getOrganization()) {
+            $variables['organization'] = $commonGroundService->getResource($this->getUser()->getOrganization());
+        }
+
+        if ($id != 'new') {
+            // Get resource challenges (known as tender component side)
+            $variables['product'] = $commonGroundService->getResource(['component' => 'pdc', 'type' => 'products', 'id' => $id]);
+        } else {
+            $variables['product'] = ['id' => 'new'];
+        }
+
+        // Lets see if there is a post to procces
+        if ($request->isMethod('POST')) {
+            $resource = $request->request->all();
+
+            // Add the post data to the already aquired resource data
+            $resource = array_merge($variables['product'], $resource);
+
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $variables['organization']['id']]);
+
+            $resource['sourceOrganization'] = $organizationUrl;
+            $resource['requiresAppointment'] = false;
+
+            // Update to the commonground component
+            $variables['product'] = $commonGroundService->saveResource($resource, ['component' => 'pdc', 'type' => 'products']);
+
+            var_dump($variables['product']);
+
+            return $this->redirect($this->generateUrl('app_dashboardorganization_products'));
         }
 
         return $variables;

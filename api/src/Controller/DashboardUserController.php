@@ -352,8 +352,11 @@ class DashboardUserController extends AbstractController
                 $person = $variables['person'];
             }
 
-            if ($request->files->get('personalPhoto')) {
-                $person['personalPhoto'] = base64_encode(file_get_contents($request->files->get('personalPhoto')));
+            if (isset($_FILES['personalPhoto']) && $_FILES['personalPhoto']['error'] !== 4) {
+                $path = $_FILES['personalPhoto']['tmp_name'];
+                $type = filetype($_FILES['personalPhoto']['tmp_name']);
+                $data = file_get_contents($path);
+                $person['personalPhoto'] = 'data:image/'.$type.';base64,'.base64_encode($data);
             }
 
             $person['name'] = $name;
@@ -475,18 +478,13 @@ class DashboardUserController extends AbstractController
 
         $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $id]);
 
-        $account = $balanceService->getAcount($organizationUrl);
-
-        if ($account !== false) {
-            $account['balance'] = $balanceService->getBalance($organizationUrl);
-            $variables['account'] = $account;
-            $variables['payments'] = $commonGroundService->getResourceList(['component' => 'bare', 'type' => 'payments'], ['acount.id' => $account['id'], 'order[dateCreated]' => 'desc'])['hydra:member'];
-        }
-
         $groups = $commonGroundService->getResourceList(['component' => 'uc', 'type' => 'groups'], ['organization' => $organizationUrl])['hydra:member'];
         if (count($groups) > 0) {
             $group = $groups[0];
             $variables['users'] = $group['users'];
+        } else {
+            $user = $commonGroundService->getResourceList(['component' => 'uc', 'type' => 'users'], ['username' => $this->getUser()->getUsername()])['hydra:member'][0];
+            $variables['users'][] = $user;
         }
 
         $redirectToPlural = false;
@@ -512,6 +510,21 @@ class DashboardUserController extends AbstractController
 
             if (isset($resource['style'])) {
                 $resource['style'] = '/styles/' . $resource['style']['id'];
+            }
+
+            if (isset($resource['privacyContact'])) {
+                $userUrl = $commonGroundService->cleanUrl(['component' => 'uc', 'type' => 'users', 'id' => $resource['privacyContact']]);
+                $resource['privacyContact'] = $userUrl;
+            }
+
+            if (isset($resource['administrationContact'])) {
+                $userUrl = $commonGroundService->cleanUrl(['component' => 'uc', 'type' => 'users', 'id' => $resource['administrationContact']]);
+                $resource['administrationContact'] = $userUrl;
+            }
+
+            if (isset($resource['technicalContact'])) {
+                $userUrl = $commonGroundService->cleanUrl(['component' => 'uc', 'type' => 'users', 'id' => $resource['technicalContact']]);
+                $resource['technicalContact'] = $userUrl;
             }
 
             if ($newOrganization) {
@@ -573,6 +586,19 @@ class DashboardUserController extends AbstractController
             } else {
                 return $this->redirectToRoute($variables['path'], ['id' => $variables['item']['id']]);
             }
+        }
+
+        $account = $balanceService->getAcount($organizationUrl);
+
+        if ($account !== false) {
+            $account['balance'] = $balanceService->getBalance($organizationUrl);
+            $variables['account'] = $account;
+            $variables['payments'] = $commonGroundService->getResourceList(['component' => 'bare', 'type' => 'payments'], ['acount.id' => $account['id'], 'order[dateCreated]' => 'desc'])['hydra:member'];
+        } else {
+            $account = $balanceService->createAccount($organizationUrl);
+            $account['balance'] = $balanceService->getBalance($organizationUrl);
+            $variables['account'] = $account;
+            $variables['payments'] = $commonGroundService->getResourceList(['component' => 'bare', 'type' => 'payments'], ['acount.id' => $account['id'], 'order[dateCreated]' => 'desc'])['hydra:member'];
         }
 
         return $variables;

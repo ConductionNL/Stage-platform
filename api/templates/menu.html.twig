@@ -170,29 +170,31 @@
                     {{ 'login'|trans|capitalize }}</a>
             </div>
         {% else %}
-        <div class="d-none d-lg-block dropdown">
-            <div class="user-avatar avatar mr-4 dropdown-toggle" data-toggle="dropdown" aria-expanded="false"  id="userDropdown">
-                <img src="/bundles/rocket/assets/img/team/profile-picture-3.jpg" class="card-img-top rounded-circle border-white" alt="Bonnie Green">
-            </div>
-            <div class="dropdown-menu dropdown-menu-lg" aria-labelledby="userDropdown">
-                <div class="col-auto px-0">
-                    <div class="dropdown pl-3">{{ app.user.username }}</div>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ path('app_dashboarduser_index') }}">{{ 'dashboard'|trans|capitalize }}</a>
-                    <a class="dropdown-item" href="{{ path('app_dashboarduser_tutorials') }}">{{ 'my tutorials'|trans|capitalize }}</a>
-                    <a class="dropdown-item" href="{{ path('app_dashboarduser_challenges') }}">{{ 'challenges'|trans|capitalize }}</a>
-                    <a class="dropdown-item" href="{{ path('app_dashboarduser_internships') }}">{{ 'internships'|trans|capitalize }}</a>
-                    <a class="dropdown-item" href="{{ path('app_dashboarduser_teams') }}">{{ 'teams'|trans|capitalize }}</a>
-                    <a class="dropdown-item" href="{{ path('app_dashboarduser_settings') }}">{{ 'settings'|trans|capitalize }}</a>
-                    {% if app.user.organization is defined and app.user.organization is not empty %}
-                        <a class="dropdown-item" href="{{ path('app_dashboarduser_organizations') }}">{{ 'organizations'|trans|capitalize }}</a>
-                    {% endif %}
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ path('app_user_logout') }}">{{ 'logout'|trans|capitalize }}</a>
+            {% set person = commonground_resource(app.user.person) %}
+            <div class="d-none d-lg-block dropdown">
+                <div class="user-avatar avatar mr-4 dropdown-toggle" data-toggle="dropdown" aria-expanded="false"  id="userDropdown">
+                    <img {% if person.personalPhoto is defined and person.personalPhoto is not empty %} src="{{ person.personalPhoto }}" {% else %} src="https://eu.ui-avatars.com/api/?name={{ person.givenName }}+{{ person.familyName }}&background=EB2D2D&rounded=true&color=fff&bold=true"{% endif%}
+                        class="card-img-top rounded-circle border-white">
                 </div>
-            </div>
+                <div class="dropdown-menu dropdown-menu-lg" aria-labelledby="userDropdown">
+                    <div class="col-auto px-0">
+                        <div class="dropdown pl-3">{{ app.user.username }}</div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ path('app_dashboarduser_index') }}">{{ 'dashboard'|trans|capitalize }}</a>
+                        <a class="dropdown-item" href="{{ path('app_dashboarduser_tutorials') }}">{{ 'my tutorials'|trans|capitalize }}</a>
+                        <a class="dropdown-item" href="{{ path('app_dashboarduser_challenges') }}">{{ 'challenges'|trans|capitalize }}</a>
+                        <a class="dropdown-item" href="{{ path('app_dashboarduser_internships') }}">{{ 'internships'|trans|capitalize }}</a>
+                        <a class="dropdown-item" href="{{ path('app_dashboarduser_teams') }}">{{ 'teams'|trans|capitalize }}</a>
+                        <a class="dropdown-item" href="{{ path('app_dashboarduser_settings') }}">{{ 'settings'|trans|capitalize }}</a>
+                        {% if app.user.organization is defined and app.user.organization is not empty %}
+                            <a class="dropdown-item" href="{{ path('app_dashboarduser_organizations') }}">{{ 'organizations'|trans|capitalize }}</a>
+                        {% endif %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ path('app_user_logout') }}">{{ 'logout'|trans|capitalize }}</a>
+                    </div>
+                </div>
 
-        </div>
+            </div>
         {% endif %}
         <div class="d-flex d-lg-none align-items-center ml-auto">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global"

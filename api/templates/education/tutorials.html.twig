@@ -34,7 +34,7 @@
         <div class="container z-2 mt-n9 mt-lg-n11">
             <div class="row">
                 {% for type in types %}
-                    <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <div class="col-12 col-md-6 col-lg-3 mb-4">
                         <a href="{{ path('app_education_tutorials',{'additionalType': type}) }}" class="card text-center shadow-soft border-light animate-up-3">
                             <div class="card-body p-5">
                                 <div class="icon icon-shape icon-shape-primary rounded-circle mb-4"><span class="fas fa-clipboard-list"></span></div>
@@ -65,7 +65,10 @@
                             <div class="card-body p-0 pt-4"><a href="{{ path('app_education_tutorial', {id: tutorial.id}) }}" class="h3">{{ tutorial.name }}</a>
                                 {% if tutorial.organization is defined and tutorial.organization is not empty %}
                                     {% set organization = commonground_resource(tutorial.organization) %}
-                                    <div class="d-flex align-items-center mt-2 mb-2"><img class="avatar avatar-sm rounded-circle" src="{{ organization.style.favicon.base64 }}" alt="">
+                                    <div class="d-flex align-items-center mt-2 mb-2">
+                                        {%  if organization.style.favicon.base64 is defined %}
+                                            <img class="avatar avatar-sm rounded-circle" src="{{ organization.style.favicon.base64 }}" alt="">
+                                        {% endif %}
                                         <h6 class="text-muted small ml-2 mb-0">{{ organization.name }}</h6>
                                     </div>
                                     <div class="mb-2 font-weight-bold">

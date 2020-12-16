@@ -94,38 +94,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row align-items-center">
-                        <div class="col-md-6 mb-3">
-                            <div class="form-group">
-                                <label for="organization">{{ 'organization'|trans|capitalize }}</label>
-                                <select class="form-control" name="organization" id="organization">
-                                    {#                                    {% for organization in organizations %}#}
-                                    {#                                        {% set organizationUrl = commonground_cleanurl({'component':'wrc', 'type':'organizations', 'id':organization.id}) %}#}
-                                    {#                                        <option#}
-                                    {#                                            {% if app.user.organization is defined and app.user.organization == organizationUrl %} selected#}
-                                    {#                                            {% elseif tutorial.organization is defined and tutorial.organization == organizationUrl %} selected#}
-                                    {#                                            {% endif %}#}organization
-                                    {#                                            value="{{ organizationUrl }}">{{ .name }}#}
-                                    {#                                        </option>#}
-                                    {#                                    {% endfor %}#}
-{#                                    {% if app.user.organization|default %}#}
-{#                                        {% set org = commonground_resource(app.user.organization) %}#}
-{#                                        <option style="background: #f5f8fb" class="form-control" id="organizationInput"#}
-{#                                                type="text" value="{{ org['@id'] }}"#}
-{#                                                selected>{{ org.name|capitalize }}</option>#}
-{#                                    {% endif %}#}
-                                </select>
-                                {#                                {% if app.user.organization|default %}#}
-                                {#                                    {% set org = commonground_resource(app.user.organization) %}#}
-                                {#                                    <input style="background: #f5f8fb" class="form-control" id="organizationInput"#}
-                                {#                                           type="text"#}
-                                {#                                           name="organization" value="{{ org.name|capitalize }}" disabled>#}
-                                {#                                {% endif %}#}
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="row align-items-center">
                         <div class="col-md-6 mb-3">
                             <div class="form-group">
@@ -379,6 +347,244 @@
             {% endif %}
             <br>
         {% endif %}
+
+        <h3 class="h4">{{ 'products'|trans|capitalize }}</h3>
+        {% if products|default %}
+            {% if tutorial.id == 'new' %}
+                <p class="mb-0">{{ 'choose the products for your tutorial'|trans|capitalize }}</p>
+            {% elseif tutorial.products|default %}
+                <p class="mb-0">{{ 'the checked products are the products of your tutorial'|trans|capitalize }}</p>
+            {% else %}
+                <p class="mb-0">{{ 'you can select the products for your tutorial here'|trans|capitalize }}</p>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th class="border-0">
+                                </th>
+                                <th class="border-0">{{ 'name'|trans|capitalize }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if products is defined and products is not empty %}
+                                {% for product in products %}
+                                    {% set productUrl = commonground_cleanurl({'component':'pdc','type':'products','id':product.id}) %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check dashboard-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       value="{{ productUrl }}"
+                                                       id="{{ product.id }}Checkbox"
+                                                       name="products[]"
+                                                    {% if tutorial.products is defined and productUrl in tutorial.products %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                                <label
+                                                    class="form-check-label"
+                                                    for="{{ product.id }}Checkbox">
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="d-flex align-items-center">
+                                                <span class="font-weight-bold">{{ product.name }}</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="card-footer px-3 d-flex align-items-center justify-content-between">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item"><a class="page-link"
+                                                             href="#">{{ 'Previous'|trans|capitalize }}</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="#">{{ 'Next'|trans|capitalize }}</a></li>
+                                </ul>
+                            </nav>
+                            <div class="font-weight-bold small">{{ 'showing'|trans|capitalize }}
+                                <b>5</b> {{ 'out of'|trans }} <b>25</b> {{ 'entries'|trans }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="mb-0">{{ 'there are currently no products for this tutorial'|trans|capitalize }}</p>
+            <a class="btn btn-primary mb-2" href="{{ path('app_dashboardorganization_products') }}">{{ 'create product'|trans|capitalize }}</a>
+        {% endif %}
+
+        <br>
+
+        <h3 class="h4">{{ 'competences'|trans|capitalize }}</h3>
+        {% if competences|default %}
+            {% if tutorial.id == 'new' %}
+                <p class="mb-0">{{ 'choose the competences for your tutorial'|trans|capitalize }}</p>
+            {% elseif tutorial.competences|default %}
+                <p class="mb-0">{{ 'the checked competences are the competences of your tutorial'|trans|capitalize }}</p>
+            {% else %}
+                <p class="mb-0">{{ 'you can select the competences for your tutorial here'|trans|capitalize }}</p>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th class="border-0">
+                                </th>
+                                <th class="border-0">{{ 'name'|trans|capitalize }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if competences is defined and competences is not empty %}
+                                {% for competence in competences %}
+                                    {% set competenceUrl = commonground_cleanurl({'component':'mrc','type':'competences','id':competence.id}) %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check dashboard-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       value="{{ competenceUrl }}"
+                                                       id="{{ competence.id }}Checkbox"
+                                                       name="competences[]"
+                                                    {% if tutorial.competences is defined and competenceUrl in tutorial.competences %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                                <label
+                                                    class="form-check-label"
+                                                    for="{{ competence.id }}Checkbox">
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="d-flex align-items-center">
+                                                <span class="font-weight-bold">{{ competence.name }}</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="card-footer px-3 d-flex align-items-center justify-content-between">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item"><a class="page-link"
+                                                             href="#">{{ 'Previous'|trans|capitalize }}</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="#">{{ 'Next'|trans|capitalize }}</a></li>
+                                </ul>
+                            </nav>
+                            <div class="font-weight-bold small">{{ 'showing'|trans|capitalize }}
+                                <b>5</b> {{ 'out of'|trans }} <b>25</b> {{ 'entries'|trans }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="mb-0">{{ 'there are currently no competences for this tutorial'|trans|capitalize }}</p>
+        {% endif %}
+
+        <br>
+
+        <h3 class="h4">{{ 'skills'|trans|capitalize }}</h3>
+        {% if skills|default %}
+            {% if tutorial.id == 'new' %}
+                <p class="mb-0">{{ 'choose the skills for your tutorial'|trans|capitalize }}</p>
+            {% elseif tutorial.skills|default %}
+                <p class="mb-0">{{ 'the checked skills are the skills of your tutorial'|trans|capitalize }}</p>
+            {% else %}
+                <p class="mb-0">{{ 'you can select the skills for your tutorial here'|trans|capitalize }}</p>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th class="border-0">
+                                </th>
+                                <th class="border-0">{{ 'name'|trans|capitalize }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if skills is defined and skills is not empty %}
+                                {% for skill in skills %}
+                                    {% set skillUrl = commonground_cleanurl({'component':'mrc','type':'skills','id':skill.id}) %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check dashboard-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       value="{{ skillUrl }}"
+                                                       id="{{ skill.id }}Checkbox"
+                                                       name="skills[]"
+                                                    {% if tutorial.skills is defined and skillUrl in tutorial.skills %}
+                                                        checked
+                                                    {% endif %}
+                                                >
+                                                <label
+                                                    class="form-check-label"
+                                                    for="{{ skill.id }}Checkbox">
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="d-flex align-items-center">
+                                                <span class="font-weight-bold">{{ skill.name }}</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="card-footer px-3 d-flex align-items-center justify-content-between">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item"><a class="page-link"
+                                                             href="#">{{ 'Previous'|trans|capitalize }}</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="#">{{ 'Next'|trans|capitalize }}</a></li>
+                                </ul>
+                            </nav>
+                            <div class="font-weight-bold small">{{ 'showing'|trans|capitalize }}
+                                <b>5</b> {{ 'out of'|trans }} <b>25</b> {{ 'entries'|trans }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="mb-0">{{ 'there are currently no skills for this tutorial'|trans|capitalize }}</p>
+        {% endif %}
+
+        <br>
 
         <h3 class="h4">{{ 'requirements'|trans|capitalize }}</h3>
         {% if requirements|default %}
