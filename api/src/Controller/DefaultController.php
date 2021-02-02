@@ -40,7 +40,7 @@ class DefaultController extends AbstractController
             $employees = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'employees'], ['person' => $personUrl])['hydra:member'];
 
             if (!count($employees) > 0) {
-                $mailingService->sendMail('mails/welcome_mail.html.twig', 'no-reply@conduction.nl', $this->getUser()->getUsername(), 'Welkom op conduction.academy');
+                $mailingService->sendMail('mails/welcome_mail.html.twig', 'no-reply@conduction.academy', $this->getUser()->getUsername(), 'Welkom op conduction.academy');
 
                 $employee = [];
                 $employee['person'] = $personUrl;
@@ -107,8 +107,6 @@ class DefaultController extends AbstractController
      */
     public function newsletterAction(Session $session, Request $request, CommonGroundService $commonGroundService, ParameterBagInterface $params, EventDispatcherInterface $dispatcher)
     {
-        // TODO: use email used in form to subscribe to the newsletter?
-
         $session->set('backUrl', $request->query->get('backUrl'));
 
         $providers = $commonGroundService->getResourceList(['component' => 'uc', 'type' => 'providers'], ['type' => 'id-vault', 'application' => $params->get('app_id')])['hydra:member'];
@@ -117,12 +115,7 @@ class DefaultController extends AbstractController
         $redirect = $this->generateUrl('app_default_index', ['message' => 'you have successfully signed up for the newsletter!'], UrlGeneratorInterface::ABSOLUTE_URL);
 
         if (isset($provider['configuration']['app_id']) && isset($provider['configuration']['secret'])) {
-            $dev = '';
-            if ($params->get('app_env') == 'dev') {
-                $dev = 'dev.';
-            }
-
-            return $this->redirect('http://id-vault.com/sendlist/authorize?client_id='.$provider['configuration']['app_id'].'&send_lists=8b929e53-1e16-4e59-a254-6af6b550bd08&redirect_uri='.$redirect);
+            return $this->redirect('http://id-vault.com/sendlist/authorize?client_id='.$provider['configuration']['app_id'].'&send_lists=a06e1cf1-4d24-4f69-9f28-cd26b1e54f9f&redirect_uri='.$redirect);
         } else {
             return $this->render('500.html.twig');
         }

@@ -161,54 +161,90 @@
                         <h2 class="h5">{{ 'socials'|trans|capitalize }}</h2>
 
                         <div class="row">
-                            <div class="col-md-6 mb-0">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label for="socials.facebook">{{ 'facebook'|trans|capitalize }}</label>
-                                    <input class="form-control" id="socials.facebook" name="socials.facebook" type="text"
-                                        {% if organizationContact.socials.0.facebook|default %}
-                                           value="{{ organizationContact.socials.0.facebook }}"
+                                    <label for="website">{{ 'website'|trans|capitalize }}</label>
+                                    <input class="form-control" id="website" name="website" type="url"
+                                        {% if organizationContact.socials|default %}
+                                            {% for social in organizationContact.socials %}
+                                                {% if social.type == 'website' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-0">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label for="socials.twitter">{{ 'twitter'|trans|capitalize }}</label>
-                                    <input class="form-control" id="socials.twitter" name="socials.twitter" type="text"
-                                        {% if organizationContact.socials.0.twitter|default %}
-                                           value="{{ organizationContact.socials.0.twitter }}"
+                                    <label for="github">{{ 'github'|trans|capitalize }}</label>
+                                    <input class="form-control" id="github" name="github" type="url"
+                                        {% if organizationContact.socials|default %}
+                                            {% for social in organizationContact.socials %}
+                                                {% if social.type == 'github' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-0">
                                 <div class="form-group">
-                                    <label for="socials.linkedin">{{ 'linkedin'|trans|capitalize }}</label>
-                                    <input class="form-control" id="socials.linkedin" name="socials.linkedin" type="text"
-                                        {% if organizationContact.socials.0.linkedin|default %}
-                                           value="{{ organizationContact.socials.0.linkedin }}"
+                                    <label for="facebook">{{ 'facebook'|trans|capitalize }}</label>
+                                    <input class="form-control" id="facebook" name="facebook" type="url"
+                                        {% if organizationContact.socials|default %}
+                                            {% for social in organizationContact.socials %}
+                                                {% if social.type == 'facebook' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-0">
                                 <div class="form-group">
-                                    <label for="socials.instagram">{{ 'instagram'|trans|capitalize }}</label>
-                                    <input class="form-control" id="socials.instagram" name="socials.instagram" type="text"
-                                        {% if organizationContact.socials.0.instagram|default %}
-                                           value="{{ organizationContact.socials.0.instagram }}"
+                                    <label for="twitter">{{ 'twitter'|trans|capitalize }}</label>
+                                    <input class="form-control" id="twitter" name="twitter" type="url"
+                                        {% if organizationContact.socials|default %}
+                                            {% for social in organizationContact.socials %}
+                                                {% if social.type == 'twitter' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label for="socials.website">{{ 'website'|trans|capitalize }}</label>
-                                    <input class="form-control" id="socials.website" name="socials.website" type="text"
-                                        {% if organizationContact.socials.0.website|default %}
-                                           value="{{ organizationContact.socials.0.website }}"
+                                    <label for="linkedin">{{ 'linkedin'|trans|capitalize }}</label>
+                                    <input class="form-control" id="linkedin" name="linkedin" type="url"
+                                        {% if organizationContact.socials|default %}
+                                            {% for social in organizationContact.socials %}
+                                                {% if social.type == 'linkedin' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="instagram">{{ 'instagram'|trans|capitalize }}</label>
+                                    <input class="form-control" id="instagram" name="instagram" type="url"
+                                        {% if organizationContact.socials|default %}
+                                            {% for social in organizationContact.socials %}
+                                                {% if social.type == 'instagram' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>

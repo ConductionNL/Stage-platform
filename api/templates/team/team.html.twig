@@ -109,7 +109,7 @@
                         {% else %}
                             <p class="mt-4 text-center">{{ 'you need to be logged in to join a team'|trans|capitalize }}</p>
                             <a class="mt-2 text-center btn btn-secondary"
-                               href="{{ path('app_user_idvault') }}?backUrl={{ path('app_team_team', {id: team.id}) }}">{{ 'click here to log in'|trans|capitalize }} </a>
+                               href="{{ path('app_user_idvault') }}">{{ 'click here to log in'|trans|capitalize }} </a>
                         {% endif %}
                     </div>
                 </div>

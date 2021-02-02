@@ -116,7 +116,7 @@ class InternshipController extends AbstractController
 
                 ];
 
-                $mailingService->sendMail('mails/internship_application.html.twig', 'no-reply@stage-platform.nl', $receiver, 'stage inschrijving', $data);
+                $mailingService->sendMail('mails/internship_application.html.twig', 'no-reply@conduction.academy', $receiver, 'stage inschrijving', $data);
             }
         }
 

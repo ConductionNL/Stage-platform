@@ -74,6 +74,16 @@ class DashboardOrganizationController extends AbstractController
         $variables['organizations'] = $commonGroundService->getResourceList(['component' => 'wrc', 'type' => 'organizations'])['hydra:member'];
         $variables['activities'] = $commonGroundService->getResourceList(['component' => 'edu', 'type' => 'activities'])['hydra:member'];
         $variables['requirements'] = $commonGroundService->getResourceList(['component' => 'edu', 'type' => 'courses'])['hydra:member'];
+        $variables['skills'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'skills'])['hydra:member'];
+        $variables['competences'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'competences'])['hydra:member'];
+
+        if ($this->getUser()->getOrganization()) {
+            $organization = $commonGroundService->getResource($this->getUser()->getOrganization());
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
+            $variables['products'] = $commonGroundService->getResourceList(['component' => 'pdc', 'type' => 'products'], ['sourceOrganization' => $organizationUrl])['hydra:member'];
+        } else {
+            $variables['products'] = [];
+        }
 
         if ($id != 'new') {
             // Get resource tutorial (known as course component side)
@@ -86,11 +96,8 @@ class DashboardOrganizationController extends AbstractController
         // Lets see if there is a post to procces
         if ($request->isMethod('POST')) {
             $resource = $request->request->all();
-            // Add the post data to the already aquired resource data
-//            $resource = array_merge($variables['tutorial'], $resource);
-            // Update to the commonground component
-            var_dump($resource);
-//            die;
+
+            $resource['organization'] = $organizationUrl;
             $variables['tutorial'] = $commonGroundService->saveResource($resource, ['component' => 'edu', 'type' => 'courses']);
 
             return $this->redirect($this->generateUrl('app_dashboardorganization_tutorials'));
@@ -257,6 +264,78 @@ class DashboardOrganizationController extends AbstractController
     }
 
     /**
+     * @Route("/products")
+     * @Template
+     */
+    public function productsAction(Request $request, CommonGroundService $commonGroundService)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (empty($this->getUser()->getOrganization())) {
+            return $this->redirect($this->generateUrl('app_default_organization').'?backUrl='.$this->generateUrl('app_dashboardorganization_products'));
+        }
+
+        $variables = [];
+
+        // On an index route we might want to filter based on user input
+        $variables['query'] = array_merge($request->query->all(), $variables['post'] = $request->request->all());
+
+        // Get resource challenges (known as tender component side)
+        if ($this->getUser()->getOrganization()) {
+            $organization = $commonGroundService->getResource($this->getUser()->getOrganization());
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
+            $variables['products'] = $commonGroundService->getResourceList(['component' => 'pdc', 'type' => 'products'], ['sourceOrganization' => $organizationUrl])['hydra:member'];
+        } else {
+            $variables['products'] = [];
+        }
+
+        $variables['addPath'] = 'app_dashboardorganization_product';
+
+        return $variables;
+    }
+
+    /**
+     * @Route("/products/{id}")
+     * @Template
+     */
+    public function productAction(Request $request, CommonGroundService $commonGroundService, $id)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $variables = [];
+
+        if ($this->getUser()->getOrganization()) {
+            $variables['organization'] = $commonGroundService->getResource($this->getUser()->getOrganization());
+        }
+
+        if ($id != 'new') {
+            // Get resource challenges (known as tender component side)
+            $variables['product'] = $commonGroundService->getResource(['component' => 'pdc', 'type' => 'products', 'id' => $id]);
+        } else {
+            $variables['product'] = ['id' => 'new'];
+        }
+
+        // Lets see if there is a post to procces
+        if ($request->isMethod('POST')) {
+            $resource = $request->request->all();
+
+            // Add the post data to the already aquired resource data
+            $resource = array_merge($variables['product'], $resource);
+
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $variables['organization']['id']]);
+
+            $resource['sourceOrganization'] = $organizationUrl;
+            $resource['requiresAppointment'] = false;
+
+            // Update to the commonground component
+            $variables['product'] = $commonGroundService->saveResource($resource, ['component' => 'pdc', 'type' => 'products']);
+
+            return $this->redirect($this->generateUrl('app_dashboardorganization_products'));
+        }
+
+        return $variables;
+    }
+
+    /**
      * @Route("/teams")
      * @Template
      */
@@ -351,30 +430,162 @@ class DashboardOrganizationController extends AbstractController
                 $organizationContact = $variables['organizationContact'];
             }
             $organizationContact['name'] = $name;
-            $organizationContact['emails'][0] = [];
-            $organizationContact['emails'][0]['name'] = 'email for '.$name;
-            $organizationContact['emails'][0]['email'] = $request->get('email');
-            $organizationContact['telephones'][0] = [];
-            $organizationContact['telephones'][0]['name'] = 'telephone for '.$name;
-            $organizationContact['telephones'][0]['telephone'] = $request->get('telephone');
 
-            $address = [];
+            // email
+            if (isset($organizationContact['emails'][0])) {
+                $email = $organizationContact['emails'][0];
+            } else {
+                $email = [];
+            }
+            $email['name'] = 'email for '.$name;
+            $email['email'] = $request->get('email');
+            if (isset($email['id'])) {
+                if (empty($email['email'])) {
+                    $commonGroundService->deleteResource($email, ['component' => 'cc', 'type' => 'emails']);
+                    unset($organizationContact['emails'][0]);
+                } else {
+                    $commonGroundService->saveResource($email, ['component' => 'cc', 'type' => 'emails']);
+                    $organizationContact['emails'][0] = '/emails/'.$email['id'];
+                }
+            } elseif (isset($email['email'])) {
+                $organizationContact['emails'][0] = $email;
+            }
+
+            // telephone
+            if (isset($organizationContact['telephones'][0])) {
+                $telephone = $organizationContact['telephones'][0];
+            } else {
+                $telephone = [];
+            }
+            $telephone['name'] = 'telephone for '.$name;
+            $telephone['telephone'] = $request->get('telephone');
+            if (isset($telephone['id'])) {
+                if (empty($telephone['telephone'])) {
+                    $commonGroundService->deleteResource($telephone, ['component' => 'cc', 'type' => 'telephones']);
+                    unset($organizationContact['telephones'][0]);
+                } else {
+                    $commonGroundService->saveResource($telephone, ['component' => 'cc', 'type' => 'telephones']);
+                    $organizationContact['telephones'][0] = '/telephones/'.$telephone['id'];
+                }
+            } elseif (isset($telephone['telephone'])) {
+                $organizationContact['telephones'][0] = $telephone;
+            }
+
+            // $address
+            if (isset($organizationContact['adresses'][0])) {
+                $address = $organizationContact['adresses'][0];
+            } else {
+                $address = [];
+            }
             $address['name'] = 'address for '.$name;
             $address['street'] = $request->get('street');
             $address['houseNumber'] = $request->get('houseNumber');
             $address['houseNumberSuffix'] = $request->get('houseNumberSuffix');
             $address['postalCode'] = $request->get('postalCode');
             $address['locality'] = $request->get('locality');
-            $organizationContact['adresses'][0] = $address;
+            if (isset($address['id'])) {
+                $commonGroundService->saveResource($address, ['component' => 'cc', 'type' => 'addresses']);
+                $organizationContact['adresses'][0] = '/addresses/'.$address['id'];
+            } else {
+                $organizationContact['adresses'][0] = $address;
+            }
 
-            $socials = [];
-            $socials['name'] = 'socials for '.$name;
-            $socials['description'] = 'socials for '.$name;
-            $socials['facebook'] = $request->get('facebook');
-            $socials['twitter'] = $request->get('twitter');
-            $socials['linkedin'] = $request->get('linkedin');
-            $socials['instagram'] = $request->get('instagram');
-            $organizationContact['socials'][0] = $socials;
+            // Socials
+            if (isset($organizationContact['socials'][0])) {
+                $twitter = $organizationContact['socials'][0];
+            } else {
+                $twitter = [];
+            }
+            $twitter['name'] = 'Twitter of '.$name;
+            $twitter['description'] = 'Twitter of '.$name;
+            $twitter['type'] = 'twitter';
+            $twitter['url'] = $request->get('twitter');
+            if (isset($twitter['id'])) {
+                $commonGroundService->saveResource($twitter, ['component' => 'cc', 'type' => 'socials']);
+                $organizationContact['socials'][0] = '/socials/'.$twitter['id'];
+            } else {
+                $organizationContact['socials'][0] = $twitter;
+            }
+
+            if (isset($organizationContact['socials'][1])) {
+                $facebook = $organizationContact['socials'][1];
+            } else {
+                $facebook = [];
+            }
+            $facebook['name'] = 'Facebook of '.$name;
+            $facebook['description'] = 'Facebook of '.$name;
+            $facebook['type'] = 'facebook';
+            $facebook['url'] = $request->get('facebook');
+            if (isset($facebook['id'])) {
+                $commonGroundService->saveResource($facebook, ['component' => 'cc', 'type' => 'socials']);
+                $organizationContact['socials'][1] = '/socials/'.$facebook['id'];
+            } else {
+                $organizationContact['socials'][1] = $facebook;
+            }
+
+            if (isset($organizationContact['socials'][2])) {
+                $instagram = $organizationContact['socials'][2];
+            } else {
+                $instagram = [];
+            }
+            $instagram['name'] = 'Instagram of '.$name;
+            $instagram['description'] = 'Instagram of '.$name;
+            $instagram['type'] = 'instagram';
+            $instagram['url'] = $request->get('instagram');
+            if (isset($instagram['id'])) {
+                $commonGroundService->saveResource($instagram, ['component' => 'cc', 'type' => 'socials']);
+                $organizationContact['socials'][2] = '/socials/'.$instagram['id'];
+            } else {
+                $organizationContact['socials'][2] = $instagram;
+            }
+
+            if (isset($organizationContact['socials'][3])) {
+                $linkedin = $organizationContact['socials'][3];
+            } else {
+                $linkedin = [];
+            }
+            $linkedin['name'] = 'Linkedin of '.$name;
+            $linkedin['description'] = 'Linkedin of '.$name;
+            $linkedin['type'] = 'linkedin';
+            $linkedin['url'] = $request->get('linkedin');
+            if (isset($linkedin['id'])) {
+                $commonGroundService->saveResource($linkedin, ['component' => 'cc', 'type' => 'socials']);
+                $organizationContact['socials'][3] = '/socials/'.$linkedin['id'];
+            } else {
+                $organizationContact['socials'][3] = $linkedin;
+            }
+
+            if (isset($organizationContact['socials'][4])) {
+                $github = $organizationContact['socials'][4];
+            } else {
+                $github = [];
+            }
+            $github['name'] = 'Github of '.$name;
+            $github['description'] = 'Github of '.$name;
+            $github['type'] = 'github';
+            $github['url'] = $request->get('github');
+            if (isset($github['id'])) {
+                $commonGroundService->saveResource($github, ['component' => 'cc', 'type' => 'socials']);
+                $organizationContact['socials'][4] = '/socials/'.$github['id'];
+            } else {
+                $organizationContact['socials'][4] = $github;
+            }
+
+            if (isset($organizationContact['socials'][5])) {
+                $website = $organizationContact['socials'][5];
+            } else {
+                $website = [];
+            }
+            $website['name'] = 'Website of '.$name;
+            $website['description'] = 'Website of '.$name;
+            $website['type'] = 'website';
+            $website['url'] = $request->get('website');
+            if (isset($website['id'])) {
+                $commonGroundService->saveResource($website, ['component' => 'cc', 'type' => 'socials']);
+                $organizationContact['socials'][5] = '/socials/'.$website['id'];
+            } else {
+                $organizationContact['socials'][5] = $website;
+            }
 
             $organizationContact = $commonGroundService->saveResource($organizationContact, ['component' => 'cc', 'type' => 'organizations']);
 
@@ -415,7 +626,7 @@ class DashboardOrganizationController extends AbstractController
             $participation = $commonGroundService->getResource($resource['id']);
 
             $participation['status'] = $resource['status'];
-            unset($participation['groupColumn']);
+            unset($participation['participantGroup']);
             unset($participation['course']);
             unset($participation['program']);
             if ($participation['status'] == 'accepted') {
@@ -459,9 +670,11 @@ class DashboardOrganizationController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $variables = [];
 
-        $organization = $this->commonGroundService->getResource($this->getUser()->getOrganization());
-        $organizationUrl = $this->commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
-        $variables['invoices'] = $commonGroundService->getResourceList(['component' => 'bc', 'type' => 'invoices'], ['customer' => $organizationUrl])['hydra:member'];
+        if (!empty($this->getUser()->getOrganization())) {
+            $organization = $commonGroundService->getResource($this->getUser()->getOrganization());
+            $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $organization['id']]);
+            $variables['invoices'] = $commonGroundService->getResourceList(['component' => 'bc', 'type' => 'invoices'], ['customer' => $organizationUrl])['hydra:member'];
+        }
 
         return $variables;
     }
@@ -476,15 +689,35 @@ class DashboardOrganizationController extends AbstractController
         $variables = [];
 
         $variables['invoice'] = $commonGroundService->getResource(['component' => 'bc', 'type' => 'invoices', 'id' => $id]);
-        $variables['organization'] = $commonGroundService->getResource($variables['invoice']['targetOrganization']);
-
-        if (!empty($variables['organization']['contact'])) {
-            $variables['organization']['contact'] = $commonGroundService->getResource($variables['organization']['contact']);
-        }
-        $variables['style'] = $variables['organization']['style'];
-        $variables['customer'] = $commonGroundService->getResource($variables['invoice']['customer']);
 
         /*@todo make payment process*/
+
+        return $variables;
+    }
+
+    /**
+     * @Route("/conduction")
+     * @Template
+     */
+    public function conductionAction(CommonGroundService $commonGroundService, Request $request)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $variables = [];
+
+        $variables['challenges'] = $commonGroundService->getResourceList(['component' => 'chrc', 'type' => 'tenders'])['hydra:member'];
+        $variables['stages'] = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'job_postings'])['hydra:member'];
+
+        if (count($variables['stages']) > 0) {
+            foreach ($variables['stages'] as &$stage) {
+                $appliedFor = false;
+                $applications = $commonGroundService->getResourceList(['component' => 'mrc', 'type' => 'applications'], ['jobPosting.id' => $stage['id']])['hydra:member'];
+                if (count($applications) > 0) {
+                    $appliedFor = true;
+                }
+
+                $stage['appliedFor'] = $appliedFor;
+            }
+        }
 
         return $variables;
     }

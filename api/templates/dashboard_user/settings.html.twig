@@ -136,9 +136,13 @@
                             <div class="col-md-6 mb-0">
                                 <div class="form-group">
                                     <label for="facebook">{{ 'facebook'|trans|capitalize }}</label>
-                                    <input class="form-control" id="facebook" name="facebook" type="text"
-                                        {% if person.socials.0.facebook|default %}
-                                            value="{{ person.socials.0.facebook }}"
+                                    <input class="form-control" id="facebook" name="facebook" type="url"
+                                        {% if person.socials|default %}
+                                            {% for social in person.socials %}
+                                                {% if social.type == 'facebook' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
@@ -146,9 +150,13 @@
                             <div class="col-md-6 mb-0">
                                 <div class="form-group">
                                     <label for="twitter">{{ 'twitter'|trans|capitalize }}</label>
-                                    <input class="form-control" id="twitter" name="twitter" type="text"
-                                        {% if person.socials.0.twitter|default %}
-                                            value="{{ person.socials.0.twitter }}"
+                                    <input class="form-control" id="twitter" name="twitter" type="url"
+                                        {% if person.socials|default %}
+                                            {% for social in person.socials %}
+                                                {% if social.type == 'twitter' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
@@ -158,9 +166,13 @@
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="linkedin">{{ 'linkedin'|trans|capitalize }}</label>
-                                    <input class="form-control" id="linkedin" name="linkedin" type="text"
-                                        {% if person.socials.0.linkedin|default %}
-                                            value="{{ person.socials.0.linkedin }}"
+                                    <input class="form-control" id="linkedin" name="linkedin" type="url"
+                                        {% if person.socials|default %}
+                                            {% for social in person.socials %}
+                                                {% if social.type == 'linkedin' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
@@ -168,9 +180,29 @@
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="instagram">{{ 'instagram'|trans|capitalize }}</label>
-                                    <input class="form-control" id="instagram" name="instagram" type="text"
-                                        {% if person.socials.0.instagram|default %}
-                                            value="{{ person.socials.0.instagram }}"
+                                    <input class="form-control" id="instagram" name="instagram" type="url"
+                                        {% if person.socials|default %}
+                                            {% for social in person.socials %}
+                                                {% if social.type == 'instagram' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="github">{{ 'github'|trans|capitalize }}</label>
+                                    <input class="form-control" id="github" name="github" type="url"
+                                        {% if person.socials|default %}
+                                            {% for social in person.socials %}
+                                                {% if social.type == 'github' %}
+                                                    value="{{ social.url }}"
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     >
                                 </div>
@@ -209,15 +241,14 @@
                                     <div>
                                         <!-- Avatar -->
                                         <div class="user-avatar xl-avatar mb-3">
-                                            <img class="rounded" src="/bundles/rocket/assets/img/team/profile-picture-3.jpg"
-                                                 alt="change avatar">
+                                            <img class="rounded" id="logoHolder" {% if person.personalPhoto is defined and person.personalPhoto is not empty %}src="{{ person.personalPhoto }}"{% endif %}>
                                         </div>
                                     </div>
                                     <div class="file-field">
                                         <div class="d-flex justify-content-xl-center ml-xl-3">
                                             <div class="d-flex">
                                                 <span class="icon icon-md"><span class="fas fa-paperclip mr-3"></span></span>
-                                               <input type="file" name="personalPhoto">
+                                               <input onchange="showLogo()" type="file" id="logo" name="personalPhoto">
                                                 <div class="d-md-block text-left">
                                                     <div class="font-weight-normal text-dark mb-1">{{ 'Choose Image'|trans|capitalize }}</div>
                                                     <div class="text-gray small">{{ 'JPG, GIF or PNG. Max size of 800K'|trans|capitalize }}</div>
@@ -248,4 +279,27 @@
             {% endif %}
         </div>
     </form>
+
+    <script>
+
+        function showLogo(){
+            const toBase64 = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+
+            async function Main() {
+                let file = document.querySelector('#logo').files[0];
+                let logo = document.querySelector('#logoHolder');
+                let base64 = await toBase64(file);
+                logo.setAttribute('src', base64);
+            }
+
+            Main();
+
+        }
+
+    </script>
 {% endblock %}

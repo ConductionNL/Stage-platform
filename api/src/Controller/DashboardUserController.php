@@ -75,14 +75,14 @@ class DashboardUserController extends AbstractController
                         $courseIds[] = $participant['course']['id'];
                     }
                 }
-                if (isset($participant['groupColumn']) && $participant['status'] && $participant['status'] == 'accepted') {
-                    if (!in_array($participant['groupColumn']['id'], $groupIds)) {
-                        $variables['groups'][] = $participant['groupColumn'];
-                        $groupIds[] = $participant['groupColumn']['id'];
+                if (isset($participant['participantGroup']) && $participant['status'] && $participant['status'] == 'accepted') {
+                    if (!in_array($participant['participantGroup']['id'], $groupIds)) {
+                        $variables['groups'][] = $participant['participantGroup'];
+                        $groupIds[] = $participant['participantGroup']['id'];
                     }
                 }
                 if (!in_array($participant['id'], $participationIds) &&
-                    ($participant['groupColumn'] || $participant['program'] || $participant['course'])) {
+                    ($participant['participantGroup'] || $participant['program'] || $participant['course'])) {
                     $variables['participations'][] = $participant;
                     $participationIds[] = $participant['id'];
                 }
@@ -137,7 +137,23 @@ class DashboardUserController extends AbstractController
         $variables = [];
 
         $variables['tutorial'] = $commonGroundService->getResource(['component' => 'edu', 'type' => 'courses', 'id' => $id]);
-        $variables['tutorial']['results'][0] = ['id' => '1234', 'name' => 'test result'];
+
+        //  Getting the participants
+        if ($this->getUser()) {
+            $participants = $commonGroundService->getResourceList(['component' => 'edu', 'type' => 'participants'], ['person' => $this->getUser()->getPerson()])['hydra:member'];
+            if (count($participants) > 0) {
+                // Get the result for each participant of this user if the participant has the tutorial in course
+                $results = [];
+                foreach ($participants as $participant) {
+                    if (isset($participant['course']['id']) and $participant['course']['id'] == $id) {
+                        if (isset($participant['results'])) {
+                            array_push($results, $participant['results']);
+                        }
+                    }
+                }
+                $variables['results'] = $results;
+            }
+        }
 
         return $variables;
     }
@@ -248,8 +264,8 @@ class DashboardUserController extends AbstractController
                 // Get the group for each participant of this user
                 $teams = [];
                 foreach ($participants as $participant) {
-                    if (isset($participant['groupColumn'])) {
-                        array_push($teams, $participant['groupColumn']);
+                    if (isset($participant['participantGroup'])) {
+                        array_push($teams, $participant['participantGroup']);
                     }
                 }
                 $variables['teams'] = $teams;
@@ -330,36 +346,155 @@ class DashboardUserController extends AbstractController
                 $person = $variables['person'];
             }
 
-            if ($request->files->get('personalPhoto')) {
-                $person['personalPhoto'] = base64_encode(file_get_contents($request->files->get('personalPhoto')));
+            if (isset($_FILES['personalPhoto']) && $_FILES['personalPhoto']['error'] !== 4) {
+                $path = $_FILES['personalPhoto']['tmp_name'];
+                $type = filetype($_FILES['personalPhoto']['tmp_name']);
+                $data = file_get_contents($path);
+                $person['personalPhoto'] = 'data:image/'.$type.';base64,'.base64_encode($data);
             }
 
             $person['name'] = $name;
             $person['aboutMe'] = $request->get('aboutMe');
-            $person['emails'][0] = [];
-            $person['emails'][0]['name'] = 'email for '.$name;
-            $person['emails'][0]['email'] = $request->get('email');
-            $person['telephones'][0] = [];
-            $person['telephones'][0]['name'] = 'telephone for '.$name;
-            $person['telephones'][0]['telephone'] = $request->get('telephone');
 
-            $address = [];
+            // email
+            if (isset($person['emails'][0])) {
+                $email = $person['emails'][0];
+            } else {
+                $email = [];
+            }
+            $email['name'] = 'email for '.$name;
+            $email['email'] = $request->get('email');
+            if (isset($email['id'])) {
+                if (empty($email['email'])) {
+                    $commonGroundService->deleteResource($email, ['component' => 'cc', 'type' => 'emails']);
+                    unset($person['emails'][0]);
+                } else {
+                    $commonGroundService->saveResource($email, ['component' => 'cc', 'type' => 'emails']);
+                    $person['emails'][0] = '/emails/'.$email['id'];
+                }
+            } elseif (isset($email['email'])) {
+                $person['emails'][0] = $email;
+            }
+
+            // telephone
+            if (isset($person['telephones'][0])) {
+                $telephone = $person['telephones'][0];
+            } else {
+                $telephone = [];
+            }
+            $telephone['name'] = 'telephone for '.$name;
+            $telephone['telephone'] = $request->get('telephone');
+            if (isset($telephone['id'])) {
+                if (empty($telephone['telephone'])) {
+                    $commonGroundService->deleteResource($telephone, ['component' => 'cc', 'type' => 'telephones']);
+                    unset($person['telephones'][0]);
+                } else {
+                    $commonGroundService->saveResource($telephone, ['component' => 'cc', 'type' => 'telephones']);
+                    $person['telephones'][0] = '/telephones/'.$telephone['id'];
+                }
+            } elseif (isset($telephone['telephone'])) {
+                $person['telephones'][0] = $telephone;
+            }
+
+            // $address
+            if (isset($person['adresses'][0])) {
+                $address = $person['adresses'][0];
+            } else {
+                $address = [];
+            }
             $address['name'] = 'address for '.$name;
             $address['street'] = $request->get('street');
             $address['houseNumber'] = $request->get('houseNumber');
             $address['houseNumberSuffix'] = $request->get('houseNumberSuffix');
             $address['postalCode'] = $request->get('postalCode');
             $address['locality'] = $request->get('locality');
-            $person['adresses'][0] = $address;
+            if (isset($address['id'])) {
+                $commonGroundService->saveResource($address, ['component' => 'cc', 'type' => 'addresses']);
+                $person['adresses'][0] = '/addresses/'.$address['id'];
+            } else {
+                $person['adresses'][0] = $address;
+            }
 
-            $socials = [];
-            $socials['name'] = 'socials for '.$name;
-            $socials['description'] = 'socials for '.$name;
-            $socials['facebook'] = $request->get('facebook');
-            $socials['twitter'] = $request->get('twitter');
-            $socials['linkedin'] = $request->get('linkedin');
-            $socials['instagram'] = $request->get('instagram');
-            $person['socials'][0] = $socials;
+            // Socials
+            if (isset($person['socials'][0])) {
+                $twitter = $person['socials'][0];
+            } else {
+                $twitter = [];
+            }
+            $twitter['name'] = 'Twitter of '.$name;
+            $twitter['description'] = 'Twitter of '.$name;
+            $twitter['type'] = 'twitter';
+            $twitter['url'] = $request->get('twitter');
+            if (isset($twitter['id'])) {
+                $commonGroundService->saveResource($twitter, ['component' => 'cc', 'type' => 'socials']);
+                $person['socials'][0] = '/socials/'.$twitter['id'];
+            } else {
+                $person['socials'][0] = $twitter;
+            }
+
+            if (isset($person['socials'][1])) {
+                $facebook = $person['socials'][1];
+            } else {
+                $facebook = [];
+            }
+            $facebook['name'] = 'Facebook of '.$name;
+            $facebook['description'] = 'Facebook of '.$name;
+            $facebook['type'] = 'facebook';
+            $facebook['url'] = $request->get('facebook');
+            if (isset($facebook['id'])) {
+                $commonGroundService->saveResource($facebook, ['component' => 'cc', 'type' => 'socials']);
+                $person['socials'][1] = '/socials/'.$facebook['id'];
+            } else {
+                $person['socials'][1] = $facebook;
+            }
+
+            if (isset($person['socials'][2])) {
+                $instagram = $person['socials'][2];
+            } else {
+                $instagram = [];
+            }
+            $instagram['name'] = 'Instagram of '.$name;
+            $instagram['description'] = 'Instagram of '.$name;
+            $instagram['type'] = 'instagram';
+            $instagram['url'] = $request->get('instagram');
+            if (isset($instagram['id'])) {
+                $commonGroundService->saveResource($instagram, ['component' => 'cc', 'type' => 'socials']);
+                $person['socials'][2] = '/socials/'.$instagram['id'];
+            } else {
+                $person['socials'][2] = $instagram;
+            }
+
+            if (isset($person['socials'][3])) {
+                $linkedin = $person['socials'][3];
+            } else {
+                $linkedin = [];
+            }
+            $linkedin['name'] = 'Linkedin of '.$name;
+            $linkedin['description'] = 'Linkedin of '.$name;
+            $linkedin['type'] = 'linkedin';
+            $linkedin['url'] = $request->get('linkedin');
+            if (isset($linkedin['id'])) {
+                $commonGroundService->saveResource($linkedin, ['component' => 'cc', 'type' => 'socials']);
+                $person['socials'][3] = '/socials/'.$linkedin['id'];
+            } else {
+                $person['socials'][3] = $linkedin;
+            }
+
+            if (isset($person['socials'][4])) {
+                $github = $person['socials'][4];
+            } else {
+                $github = [];
+            }
+            $github['name'] = 'Github of '.$name;
+            $github['description'] = 'Github of '.$name;
+            $github['type'] = 'github';
+            $github['url'] = $request->get('github');
+            if (isset($github['id'])) {
+                $commonGroundService->saveResource($github, ['component' => 'cc', 'type' => 'socials']);
+                $person['socials'][4] = '/socials/'.$github['id'];
+            } else {
+                $person['socials'][4] = $github;
+            }
 
             $person = $commonGroundService->saveResource($person, ['component' => 'cc', 'type' => 'people']);
 
@@ -401,6 +536,7 @@ class DashboardUserController extends AbstractController
         $variables['path'] = 'app_dashboarduser_organizations';
         $variables['pathToSingular'] = 'app_dashboarduser_organization';
         $variables['type'] = 'organization';
+        $variables['addPath'] = 'app_dashboarduser_organization';
 
         if ($organization = $this->getUser()->getOrganization()) {
             $variables['organization'] = $commonGroundService->getResource($organization);
@@ -452,18 +588,13 @@ class DashboardUserController extends AbstractController
 
         $organizationUrl = $commonGroundService->cleanUrl(['component' => 'wrc', 'type' => 'organizations', 'id' => $id]);
 
-        $account = $balanceService->getAcount($organizationUrl);
-
-        if ($account !== false) {
-            $account['balance'] = $balanceService->getBalance($organizationUrl);
-            $variables['account'] = $account;
-            $variables['payments'] = $commonGroundService->getResourceList(['component' => 'bare', 'type' => 'payments'], ['acount.id' => $account['id'], 'order[dateCreated]' => 'desc'])['hydra:member'];
-        }
-
         $groups = $commonGroundService->getResourceList(['component' => 'uc', 'type' => 'groups'], ['organization' => $organizationUrl])['hydra:member'];
         if (count($groups) > 0) {
             $group = $groups[0];
             $variables['users'] = $group['users'];
+        } else {
+            $user = $commonGroundService->getResourceList(['component' => 'uc', 'type' => 'users'], ['username' => $this->getUser()->getUsername()])['hydra:member'][0];
+            $variables['users'][] = $user;
         }
 
         $redirectToPlural = false;
@@ -489,6 +620,21 @@ class DashboardUserController extends AbstractController
 
             if (isset($resource['style'])) {
                 $resource['style'] = '/styles/'.$resource['style']['id'];
+            }
+
+            if (isset($resource['privacyContact'])) {
+                $userUrl = $commonGroundService->cleanUrl(['component' => 'uc', 'type' => 'users', 'id' => $resource['privacyContact']]);
+                $resource['privacyContact'] = $userUrl;
+            }
+
+            if (isset($resource['administrationContact'])) {
+                $userUrl = $commonGroundService->cleanUrl(['component' => 'uc', 'type' => 'users', 'id' => $resource['administrationContact']]);
+                $resource['administrationContact'] = $userUrl;
+            }
+
+            if (isset($resource['technicalContact'])) {
+                $userUrl = $commonGroundService->cleanUrl(['component' => 'uc', 'type' => 'users', 'id' => $resource['technicalContact']]);
+                $resource['technicalContact'] = $userUrl;
             }
 
             if ($newOrganization) {
@@ -550,6 +696,19 @@ class DashboardUserController extends AbstractController
             } else {
                 return $this->redirectToRoute($variables['path'], ['id' => $variables['item']['id']]);
             }
+        }
+
+        $account = $balanceService->getAcount($organizationUrl);
+
+        if ($account !== false) {
+            $account['balance'] = $balanceService->getBalance($organizationUrl);
+            $variables['account'] = $account;
+            $variables['payments'] = $commonGroundService->getResourceList(['component' => 'bare', 'type' => 'payments'], ['acount.id' => $account['id'], 'order[dateCreated]' => 'desc'])['hydra:member'];
+        } else {
+            $account = $balanceService->createAccount($organizationUrl);
+            $account['balance'] = $balanceService->getBalance($organizationUrl);
+            $variables['account'] = $account;
+            $variables['payments'] = $commonGroundService->getResourceList(['component' => 'bare', 'type' => 'payments'], ['acount.id' => $account['id'], 'order[dateCreated]' => 'desc'])['hydra:member'];
         }
 
         return $variables;

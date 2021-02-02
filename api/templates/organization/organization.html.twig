@@ -10,57 +10,39 @@
                     <h1 class="display-2 font-weight-extreme mb-4">{{ organization.name }}</h1>
                     <p class="lead">{{ organization.description }}</p>
 
-                    {% if organization.contact|default and commonground_resource(organization.contact).socials['0']|default %}
-                        {% set socials = commonground_resource(organization.contact).socials['0'] %}
+                    {% if organization.contact|default and commonground_resource(organization.contact).socials|default %}
+                        {% set contact = commonground_resource(organization.contact) %}
                         <div class="d-flex flex-column flex-lg-row justify-content-center">
-                            {% if socials.website|default %}
-                                <span class="mx-lg-2 mb-3 mb-lg-0 h6">
-                                    <a href="{{ socials.website }}">
-                                        <i class="fa fa-globe"></i>
-                                        <span>Website</span>
-                                    </a>
-                                </span>
-                            {% endif %}
-                            {% if socials.twitter|default %}
-                                <span class="mx-lg-2 mb-3 mb-lg-0 h6">
-                                    <a href="{{ socials.twitter }}">
-                                        <i class="fa fa-twitter"></i>
-                                        <span>Twitter</span>
-                                    </a>
-                                </span>
-                            {% endif %}
-                            {% if socials.facebook|default %}
-                                <span class="mx-lg-2 mb-3 mb-lg-0 h6">
-                                    <a href="{{ socials.facebook }}">
-                                        <i class="fa fa-facebook-f"></i>
-                                        <span>Facebook</span>
-                                    </a>
-                                </span>
-                            {% endif %}
-                            {% if socials.instagram|default %}
-                                <span class="mx-lg-2 mb-3 mb-lg-0 h6">
-                                    <a href="{{ socials.instagram }}">
-                                        <i class="fa fa-instagram"></i>
-                                        <span>Instagram</span>
-                                    </a>
-                                </span>
-                            {% endif %}
-                            {% if socials.linkedin|default %}
-                                <span class="mx-lg-2 mb-3 mb-lg-0 h6">
-                                    <a href="{{ socials.linkedin }}">
-                                        <i class="fa fa-linkedin-square"></i>
-                                        <span>Linkedin</span>
-                                    </a>
-                                </span>
-                            {% endif %}
-                            {% if socials.github|default %}
-                                <span class="mx-lg-2 mb-3 mb-lg-0 h6">
-                                    <a href="{{ socials.github }}">
-                                        <i class="fa fa-github"></i>
-                                        <span>Github</span>
-                                    </a>
-                                </span>
-                            {% endif %}
+                            {% for social in contact.socials %}
+                                {% if social.url|default %}
+                                    <span class="mx-lg-2 mb-3 mb-lg-0 h6">
+                                        <a href="{{ social.url }}">
+                                            {% if social.type == 'website' %}
+                                                <i class="fa fa-globe"></i>
+                                                <span>Website</span>
+                                            {% elseif social.type == 'twitter' %}
+                                                <i class="fa fa-twitter"></i>
+                                                <span>Twitter</span>
+                                            {% elseif social.type == 'facebook' %}
+                                                <i class="fa fa-facebook-f"></i>
+                                                <span>Facebook</span>
+                                            {% elseif social.type == 'instagram' %}
+                                                <i class="fa fa-instagram"></i>
+                                                <span>Instagram</span>
+                                            {% elseif social.type == 'linkedin' %}
+                                                <i class="fa fa-linkedin-square"></i>
+                                                <span>Linkedin</span>
+                                            {% elseif social.type == 'github' %}
+                                                <i class="fa fa-github"></i>
+                                                <span>Github</span>
+                                            {% elseif social.type == 'other' %}
+                                                <i class="fa fa-globe"></i>
+                                                <span>{{ social.name|trans }}</span>
+                                            {% endif %}
+                                        </a>
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                         <br>
                     {% endif %}
