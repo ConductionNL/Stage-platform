@@ -119,4 +119,4 @@ dependsOn:
 
 installations:
     - type: helm
-      url: "https://github.com/ConductionNL/stage-platform/raw/master/api/helm/stage-platform-0.1.0.tgz"
+      url: "https://raw.githubusercontent.com/ConductionNL/stage-platform/master/api/helm/"
