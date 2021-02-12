@@ -959,7 +959,7 @@
       </trans-unit>
       <trans-unit id="zwJiGsD" resname="Starting your own teams allows jou to attract teammates and tackle challenges together, there is no set definition of who should be in a team so you could either be a group of students of the same study or a multidisciplinary team consisting of different study\'s. Or you could just be a group of friends.">
         <source>Starting your own teams allows jou to attract teammates and tackle challenges together, there is no set definition of who should be in a team so you could either be a group of students of the same study or a multidisciplinary team consisting of different study\'s. Or you could just be a group of friends.</source>
-        <target>door je eigen teams te starten, kun je teamgenoten aantrekken en samen challenges aangaan, er is geen vaste definitie van wie er in een team zou moeten zitten, dus je zou een groep studenten van dezelfde studie kunnen zijn of een multidisciplinair team dat uit verschillende studies bestaat. Of je zou gewoon een groep vrienden kunnen zijn.</target>
+        <target>door je eigen teams te starten, kun je teamgenoten aantrekken en samen challenges aangaan. Er is geen vaste definitie van wie er in een team zou moeten zitten, dus je zou een groep studenten van dezelfde studie kunnen zijn of een multidisciplinair team dat uit verschillende studies bestaat. Of je zou gewoon een groep vrienden kunnen zijn.</target>
       </trans-unit>
       <trans-unit id="YZacozN" resname="The choice is all yours.">
         <source>The choice is all yours.</source>
@@ -2983,7 +2983,7 @@
       </trans-unit>
       <trans-unit id="dkzxU7r" resname="Starting your own teams allows jou to attract teammates and tackle challenges together, there is no set definition of who should be in a team so you could either be a group of students of the same study or a multidisciplinary team consisting of different study's. Or you could just be a group of friends.">
         <source>Starting your own teams allows jou to attract teammates and tackle challenges together, there is no set definition of who should be in a team so you could either be a group of students of the same study or a multidisciplinary team consisting of different study's. Or you could just be a group of friends.</source>
-        <target>door je eigen teams te starten, kun je teamgenoten aantrekken en samen challenges aangaan, er is geen vaste definitie van wie er in een team zou moeten zitten, dus je zou een groep studenten van dezelfde studie kunnen zijn of een multidisciplinair team dat uit verschillende studies bestaat. Of je zou gewoon een groep vrienden kunnen zijn.</target>
+        <target>door je eigen teams te starten, kun je teamgenoten aantrekken en samen challenges aangaan. Er is geen vaste definitie van wie er in een team zou moeten zitten, dus je zou een groep studenten van dezelfde studie kunnen zijn of een multidisciplinair team dat uit verschillende studies bestaat. Of je zou gewoon een groep vrienden kunnen zijn.</target>
       </trans-unit>
       <trans-unit id="AXWrXPf" resname="online environment for internships">
         <source>online environment for internships</source>
@@ -3487,7 +3487,7 @@
       </trans-unit>
       <trans-unit id="l7wq8Wg" resname="by starting your own team, you can attract teammates and take on challenges / challenges together. There is no set definition of who should be on a team, so you could be a group of students from the same study or a multidisciplinary team of students from different studies.">
         <source>by starting your own team, you can attract teammates and take on challenges / challenges together. There is no set definition of who should be on a team, so you could be a group of students from the same study or a multidisciplinary team of students from different studies.</source>
-        <target>door je eigen teams te starten, kun je teamgenoten aantrekken en samen challenges aangaan, er is geen vaste definitie van wie er in een team zou moeten zitten, dus je zou een groep studenten van dezelfde studie kunnen zijn of een multidisciplinair team dat uit verschillende studies bestaat.</target>
+        <target>door je eigen teams te starten, kun je teamgenoten aantrekken en samen challenges aangaan. Er is geen vaste definitie van wie er in een team zou moeten zitten, dus je zou een groep studenten van dezelfde studie kunnen zijn of een multidisciplinair team dat uit verschillende studies bestaat.</target>
       </trans-unit>
       <trans-unit id="nd.Owoq" resname="the choice is yours!">
         <source>the choice is yours!</source>
@@ -3986,6 +3986,10 @@
       <trans-unit id="lYp6aw9" resname="we have listed all the companies that are looking for an intern for you.">
         <source>we have listed all the companies that are looking for an intern for you.</source>
         <target>we hebben alle bedrijven op een rijtje gezet die voor jou op zoek zijn naar een stagiair.</target>
+      </trans-unit>
+      <trans-unit id="e2wECj." resname="interns can help us to solve challenges we experience inside or outside our organizations. they have a fresh and new perspective on things. Let/s focus on what interns need to learn to transform their fresh brain to strategic problem-solving skills. so instead of offering a student an internship, provide them with a challenge to solve.">
+        <source>interns can help us to solve challenges we experience inside or outside our organizations. they have a fresh and new perspective on things. Let/s focus on what interns need to learn to transform their fresh brain to strategic problem-solving skills. so instead of offering a student an internship, provide them with a challenge to solve.</source>
+        <target>stagiaires kunnen ons helpen bij het oplossen van challenges die we binnen of buiten onze organisaties ervaren. Ze hebben een frisse en nieuwe kijk op dingen. Laten we ons concentreren op wat stagiaires nodig hebben om te leren om hun frisse brein om te zetten in strategische probleemoplossende vaardigheden. Dus in plaats van een student een stageplaats aan te bieden, geef ze een challenge om op te lossen.</target>
       </trans-unit>
     </body>
   </file>
